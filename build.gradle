@@ -48,3 +48,8 @@ tasks.named('asciidoctor') {
 	inputs.dir snippetsDir
 	dependsOn test
 }
+
+// CI할 때(빌드 시 )jar 파일이 두개 생성되는 것을 막기 위한 코드
+jar {
+	enabled = false
+}
