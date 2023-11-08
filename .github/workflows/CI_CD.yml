@@ -53,7 +53,8 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: geumyeon/calendar:${GITHUB_SHA::7}
+          tags: geumyeon/calendar:latest
+          platforms: linux/amd64,linux/arm64
 
       # AWS 로그인
       - name: Configure AWS credentials
@@ -82,8 +83,8 @@ jobs:
               '  sudo docker stop calendar',
               '  sudo docker rm calendar',
               'fi',
-              'sudo docker pull geumyeon/calendar:${GITHUB_SHA::7}',
-              'sudo docker tag geumyeon/calendar:${GITHUB_SHA::7} calendar',
+              'sudo docker pull geumyeon/calendar:latest',
+              'sudo docker tag geumyeon/calendar:latest calendar',
               'sudo docker-compose up -d'
             ]" \
             --output text
