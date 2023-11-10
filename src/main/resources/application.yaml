@@ -1,4 +1,5 @@
 spring:
+  # 데이터 베이스 연결 성정
   datasource:
     url: jdbc:mysql://calendar-database-1.cpntmn5epfhq.ap-northeast-2.rds.amazonaws.com/calendar?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
     username: ${DATABASE_USERNAME}
@@ -12,3 +13,8 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
         format_sql: true
+
+jwt:
+  key: ${JWT_SECRET_KEY}
+  access-token-expiration-minutes: 40
+  refresh-token-expiration-minutes: 420
