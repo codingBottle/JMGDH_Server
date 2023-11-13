@@ -1,6 +1,8 @@
 package com.coding_bottle.Calendar.global.config;
 
 import com.coding_bottle.Calendar.domain.auth.filter.JwtAuthenticationFilter;
+import com.coding_bottle.Calendar.domain.auth.handler.MemberAuthenticationFailureHandler;
+import com.coding_bottle.Calendar.domain.auth.handler.MemberAuthenticationSuccessHandler;
 import com.coding_bottle.Calendar.domain.auth.jwt.JwtTokenizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -70,6 +72,8 @@ public class SecurityConfig {
 
             JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtTokenizer);  // JWT 인증 필터 선언
             jwtAuthenticationFilter.setFilterProcessesUrl("/login");    // login을 수행할 엔드포인트
+            jwtAuthenticationFilter.setAuthenticationSuccessHandler(new MemberAuthenticationSuccessHandler()); // 로그인 성공 핸들러 추가
+            jwtAuthenticationFilter.setAuthenticationFailureHandler(new MemberAuthenticationFailureHandler()); // 로그인 실패 핸들러 추가
 
             builder.addFilter(jwtAuthenticationFilter); // 필터에 JWT 인증 필터를 추가한다
         }
