@@ -1,4 +1,4 @@
-package com.codingbottle.calendar.global.exception;
+package com.codingbottle.calendar.global.exception.common;
 
 import lombok.Getter;
 

@@ -1,6 +1,5 @@
 package com.codingbottle.calendar.global.exception.common;
 
-import com.codingbottle.calendar.global.exception.ErrorCode;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 

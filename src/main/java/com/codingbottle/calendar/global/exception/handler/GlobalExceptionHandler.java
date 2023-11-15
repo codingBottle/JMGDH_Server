@@ -1,7 +1,7 @@
 package com.codingbottle.calendar.global.exception.handler;
 
 
-import com.codingbottle.calendar.global.exception.ErrorCode;
+import com.codingbottle.calendar.global.exception.common.ErrorCode;
 import com.codingbottle.calendar.global.exception.common.AppServiceException;
 import com.codingbottle.calendar.global.exception.common.BusinessException;
 import com.codingbottle.calendar.global.exception.dto.ErrorResponseDto;
