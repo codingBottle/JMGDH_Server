@@ -5,13 +5,15 @@ import com.codingbottle.calendar.domain.member.dto.MemberResponseDto;
 import com.codingbottle.calendar.domain.member.entity.Member;
 import com.codingbottle.calendar.domain.member.mapper.MemberMapper;
 import com.codingbottle.calendar.domain.member.repository.MemberRepository;
+import com.codingbottle.calendar.global.exception.common.BusinessException;
+import com.codingbottle.calendar.global.exception.common.ErrorCode;
 import com.codingbottle.calendar.global.utils.CustomAuthorityUtils;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+
 
 @Service
 @Transactional(readOnly = true)
@@ -46,10 +48,26 @@ public class MemberService {
         return memberMapper.memberToMemberResponseDto(member);
     }
 
+    @Transactional
+    public Member findMember(Long memberId) {
+        Member member = existsMemberById(memberId);
+
+        return member;
+    }
+
     // 이메일 중복여부 확인
     public void verifyExistsEmail(String email) {
         Optional<Member> member = memberRepository.findByEmail(email);
         if (member.isPresent())
-            throw new DataIntegrityViolationException("이미 존재하는 이메일입니다.");
+            throw new BusinessException(ErrorCode.EMAIL_DUPLICATION);
+    }
+
+    // member가 존재하면 member 반환, 없으면 예외 처리
+    public Member existsMemberById(Long memberId) {
+        Optional<Member> member = memberRepository.findById(memberId);
+        if(member.isEmpty())
+            throw new BusinessException(ErrorCode.USER_NOT_FOUND);
+        else
+            return member.get();
     }
 }

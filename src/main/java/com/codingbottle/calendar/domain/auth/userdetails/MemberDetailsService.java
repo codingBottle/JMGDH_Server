@@ -25,7 +25,7 @@ public class MemberDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<Member> optionalMember = memberRepository.findByEmail(username);
-        Member findMember = optionalMember.orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다. email: " + username)); ;
+        Member findMember = optionalMember.orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다. email: " + username)); // 실행되더라도 보안상 이유 BadCredentialsException이 발생한다
         return new MemberDetails(findMember);
     }
 

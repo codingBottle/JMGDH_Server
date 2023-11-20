@@ -3,13 +3,10 @@ package com.codingbottle.calendar.domain.auth.jwt;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.io.Encoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import lombok.Getter;
-import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Calendar;
 import java.util.Date;
@@ -32,8 +29,8 @@ public class JwtTokenizer {
     public String generateAccessToken(Map<String, Object> claims,
                                       String subject,
                                       Date expiration,
-                                      String base64EncodedSecretKey) {
-        Key key = getKeyFromBase64EncodedKey(base64EncodedSecretKey);
+                                      String secretKey) {
+        Key key = createHmacShaKeyFromSecretKey(secretKey);
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -44,8 +41,8 @@ public class JwtTokenizer {
                 .compact();
     }
 
-    public String generateRefreshToken(String subject, Date expiration, String base64EncodedSecretKey) {
-        Key key = getKeyFromBase64EncodedKey(base64EncodedSecretKey);
+    public String generateRefreshToken(String subject, Date expiration, String secretKey) {
+        Key key = createHmacShaKeyFromSecretKey(secretKey);
 
         return Jwts.builder()
                 .setSubject(subject)
@@ -55,8 +52,8 @@ public class JwtTokenizer {
                 .compact();
     }
 
-    public Jws<Claims> getClaims(String jws, String base64EncodedSecretKey) {
-        Key key = getKeyFromBase64EncodedKey(base64EncodedSecretKey);
+    public Jws<Claims> getClaims(String jws, String secretKey) {
+        Key key = createHmacShaKeyFromSecretKey(secretKey);
 
         Jws<Claims> claims = Jwts.parserBuilder()
                 .setSigningKey(key)
@@ -65,8 +62,8 @@ public class JwtTokenizer {
         return claims;
     }
 
-    public void verifySignature(String jws, String base64EncodedSecretKey) {
-        Key key = getKeyFromBase64EncodedKey(base64EncodedSecretKey);
+    public void verifySignature(String jws, String secretKey) {
+        Key key = createHmacShaKeyFromSecretKey(secretKey);
 
         Jwts.parserBuilder()
                 .setSigningKey(key)
@@ -82,12 +79,12 @@ public class JwtTokenizer {
         return expiration;
     }
 
-    public String encodeBase64SecretKey(String secretKey) {
-        return Encoders.BASE64.encode(secretKey.getBytes(StandardCharsets.UTF_8));
+    public String getSecretKey() {
+        return this.secretKey;
     }
 
-    private Key getKeyFromBase64EncodedKey(String base64EncodedSecretKey) {
-        byte[] keyBytes = Decoders.BASE64.decode(base64EncodedSecretKey);
+    private Key createHmacShaKeyFromSecretKey(String secretKey) {
+        byte[] keyBytes = secretKey.getBytes();
         Key key = Keys.hmacShaKeyFor(keyBytes);
 
         return key;
