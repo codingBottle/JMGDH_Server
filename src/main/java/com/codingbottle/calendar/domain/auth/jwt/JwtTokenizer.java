@@ -27,25 +27,25 @@ public class JwtTokenizer {
     private int refreshTokenExpirationMinutes;          // refreshToken 만료 시간
 
     public String generateAccessToken(Map<String, Object> claims,
-                                      String subject,
-                                      Date expiration,
-                                      String secretKey) {
-        Key key = createHmacShaKeyFromSecretKey(secretKey);
+                                      String audience) {
+        Key key = createHmacShaKeyFromSecretKey(this.secretKey);
+        Date expiration = getTokenExpiration(this.accessTokenExpirationMinutes);
 
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(subject)
+                .setAudience(audience)
                 .setIssuedAt(Calendar.getInstance().getTime())
                 .setExpiration(expiration)
                 .signWith(key)
                 .compact();
     }
 
-    public String generateRefreshToken(String subject, Date expiration, String secretKey) {
-        Key key = createHmacShaKeyFromSecretKey(secretKey);
+    public String generateRefreshToken(String audience) {
+        Key key = createHmacShaKeyFromSecretKey(this.secretKey);
+        Date expiration = getTokenExpiration(this.refreshTokenExpirationMinutes);
 
         return Jwts.builder()
-                .setSubject(subject)
+                .setAudience(audience)
                 .setIssuedAt(Calendar.getInstance().getTime())
                 .setExpiration(expiration)
                 .signWith(key)
@@ -71,7 +71,7 @@ public class JwtTokenizer {
                 .parseClaimsJws(jws);
     }
 
-    public Date getTokenExpiration(int expirationMinutes) {
+    private Date getTokenExpiration(int expirationMinutes) {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MINUTE, expirationMinutes);
         Date expiration = calendar.getTime();
