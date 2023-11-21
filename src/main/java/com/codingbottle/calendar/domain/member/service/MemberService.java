@@ -70,4 +70,8 @@ public class MemberService {
         else
             return member.get();
     }
+
+    public Member getById(long id) {
+        return memberRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다."));
+    }
 }
