@@ -1,4 +1,4 @@
-package com.codingbottle.calendar.api.common;
+package com.codingbottle.calendar.global.api;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

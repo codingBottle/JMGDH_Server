@@ -1,6 +1,6 @@
 package com.codingbottle.calendar.domain.schedule.controller;
 
-import com.codingbottle.calendar.api.common.RspTemplate;
+import com.codingbottle.calendar.global.api.RspTemplate;
 import com.codingbottle.calendar.domain.schedule.dto.ScheduleCreateReqDto;
 import com.codingbottle.calendar.domain.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
