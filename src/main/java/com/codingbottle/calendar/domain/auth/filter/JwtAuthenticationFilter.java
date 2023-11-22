@@ -15,7 +15,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,22 +62,16 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         claims.put("memberId", member.getMemberId()); // memberId 값 넣음
         claims.put("roles", member.getRole());
 
-        String subject = String.valueOf(member.getMemberId()); // subject에 memberId 넣음
-        Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getAccessTokenExpirationMinutes());
+        String audience = String.valueOf(member.getMemberId()); // audience에 memberId 넣음
 
-        String SecretKey = jwtTokenizer.getSecretKey();
-
-        String accessToken = jwtTokenizer.generateAccessToken(claims, subject, expiration, SecretKey);
+        String accessToken = jwtTokenizer.generateAccessToken(claims, audience);
 
         return accessToken;
     }
 
     private String delegateRefreshToken(Member member) {
-        String subject = String.valueOf(member.getMemberId()); // subject에 memberId 넣음
-        Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getRefreshTokenExpirationMinutes());
-        String SecretKey = jwtTokenizer.getSecretKey();
-
-        String refreshToken = jwtTokenizer.generateRefreshToken(subject, expiration, SecretKey);
+        String audience = String.valueOf(member.getMemberId()); // audience에 memberId 넣음
+        String refreshToken = jwtTokenizer.generateRefreshToken(audience);
 
         return refreshToken;
     }

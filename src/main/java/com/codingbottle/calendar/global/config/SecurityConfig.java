@@ -94,7 +94,7 @@ public class SecurityConfig {
             jwtAuthenticationFilter.setAuthenticationSuccessHandler(new MemberAuthenticationSuccessHandler()); // 로그인 성공 핸들러 추가
             jwtAuthenticationFilter.setAuthenticationFailureHandler(new MemberAuthenticationFailureHandler()); // 로그인 실패 핸들러 추가
 
-            JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtTokenizer, authorityUtils, memberService); // JWT 검증 필터 선언
+            JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtTokenizer, authorityUtils); // JWT 검증 필터 선언
 
             builder
                     .addFilter(jwtAuthenticationFilter) // 필터에 JWT 인증 필터를 추가한다
