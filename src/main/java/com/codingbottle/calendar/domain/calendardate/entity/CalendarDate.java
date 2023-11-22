@@ -1,13 +1,16 @@
-package com.codingbottle.calendar.domain.calendar.entity;
+package com.codingbottle.calendar.domain.calendardate.entity;
 
 import com.codingbottle.calendar.domain.common.BaseEntity;
 import com.codingbottle.calendar.domain.member.entity.Member;
+import com.codingbottle.calendar.domain.schedule.entity.Schedule;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -25,6 +28,9 @@ public class CalendarDate extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
+
+    @OneToMany(mappedBy = "calendarDate")
+    private List<Schedule> schedules = new ArrayList<>();
 
     public CalendarDate(LocalDate date, Member member) {
         this.year = date.getYear();

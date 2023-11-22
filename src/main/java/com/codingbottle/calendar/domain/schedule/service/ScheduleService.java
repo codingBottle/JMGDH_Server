@@ -1,7 +1,7 @@
 package com.codingbottle.calendar.domain.schedule.service;
 
-import com.codingbottle.calendar.domain.calendar.entity.CalendarDate;
-import com.codingbottle.calendar.domain.calendar.service.CalendarDateService;
+import com.codingbottle.calendar.domain.calendardate.entity.CalendarDate;
+import com.codingbottle.calendar.domain.calendardate.service.CalendarDateService;
 import com.codingbottle.calendar.domain.schedule.dto.ScheduleCreateReqDto;
 import com.codingbottle.calendar.domain.schedule.entity.Schedule;
 import com.codingbottle.calendar.domain.schedule.repository.ScheduleRepository;

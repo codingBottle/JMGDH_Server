@@ -19,7 +19,7 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
     @PostMapping("/schedules")
-    public ResponseEntity<RspTemplate<Void>> create(
+    public ResponseEntity<RspTemplate<Void>> handleCreate(
             @RequestBody ScheduleCreateReqDto reqDto,
             Authentication authentication
     ) {

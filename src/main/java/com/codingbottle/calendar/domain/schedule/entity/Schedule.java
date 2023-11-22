@@ -1,6 +1,6 @@
 package com.codingbottle.calendar.domain.schedule.entity;
 
-import com.codingbottle.calendar.domain.calendar.entity.CalendarDate;
+import com.codingbottle.calendar.domain.calendardate.entity.CalendarDate;
 import com.codingbottle.calendar.domain.common.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Getter;

@@ -1,7 +1,7 @@
-package com.codingbottle.calendar.domain.calendar.service;
+package com.codingbottle.calendar.domain.calendardate.service;
 
-import com.codingbottle.calendar.domain.calendar.entity.CalendarDate;
-import com.codingbottle.calendar.domain.calendar.repository.CalendarDateRepository;
+import com.codingbottle.calendar.domain.calendardate.entity.CalendarDate;
+import com.codingbottle.calendar.domain.calendardate.repository.CalendarDateRepository;
 import com.codingbottle.calendar.domain.member.entity.Member;
 import com.codingbottle.calendar.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class CalendarDateService {
 
     @Transactional
     public CalendarDate findOrCreateByDate(LocalDate date, long memberId) {
-        return findByMemberIdAndDate(date, memberId).orElseGet(() -> create(date, memberId));
+        return findByDate(date, memberId).orElseGet(() -> create(date, memberId));
     }
 
     private CalendarDate create(LocalDate date, long memberId) {
@@ -29,11 +29,11 @@ public class CalendarDateService {
         return calendarDateRepository.save(calendarDate);
     }
 
-    private Optional<CalendarDate> findByMemberIdAndDate(LocalDate date, long memberId) {
+    private Optional<CalendarDate> findByDate(LocalDate date, long memberId) {
         int year = date.getYear();
         int month = date.getMonthValue();
         int day = date.getDayOfMonth();
 
-        return calendarDateRepository.findByDateAndMemberId(year, month, day, memberId);
+        return calendarDateRepository.findByDate(year, month, day, memberId);
     }
 }

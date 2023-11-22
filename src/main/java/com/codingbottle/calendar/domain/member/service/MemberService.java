@@ -72,6 +72,6 @@ public class MemberService {
     }
 
     public Member getById(long id) {
-        return memberRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다."));
+        return memberRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
     }
 }
