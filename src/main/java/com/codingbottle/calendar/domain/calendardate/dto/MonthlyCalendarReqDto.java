@@ -9,15 +9,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Getter
-public class MonthlyCalendarResponse {
+public class MonthlyCalendarReqDto {
     @JsonProperty("calendarDates")
     List<CalendarDateDto> calendarDateDtos;
 
-    public static MonthlyCalendarResponse from(List<CalendarDate> calendarDates) {
-        return new MonthlyCalendarResponse(calendarDates);
+    public static MonthlyCalendarReqDto from(List<CalendarDate> calendarDates) {
+        return new MonthlyCalendarReqDto(calendarDates);
     }
 
-    public MonthlyCalendarResponse(List<CalendarDate> calendarDates) {
+    public MonthlyCalendarReqDto(List<CalendarDate> calendarDates) {
         this.calendarDateDtos = calendarDates.stream()
                 .map(CalendarDateDto::new)
                 .toList();

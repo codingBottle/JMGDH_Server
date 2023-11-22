@@ -17,6 +17,15 @@ public interface CalendarDateRepository extends JpaRepository<CalendarDate, Long
     Optional<CalendarDate> findByDate(@Param("year") int year, @Param("month") int month, @Param("day") int day,
                                       @Param("memberId") long memberId);
 
+    @Query("SELECT cd FROM CalendarDate cd" +
+            " JOIN FETCH cd.schedules s" +
+            " WHERE cd.member.memberId = :memberId" +
+            " and cd.year = :year" +
+            " and cd.month = :month" +
+            " and cd.day = :day")
+    Optional<CalendarDate> findByDateFetchSchedules(@Param("year") int year, @Param("month") int month, @Param("day") int day,
+                                      @Param("memberId") long memberId);
+
     @Query("SELECT DISTINCT cd FROM CalendarDate cd" +
             " JOIN FETCH cd.schedules s" +
             " WHERE cd.member.memberId = :memberId" +

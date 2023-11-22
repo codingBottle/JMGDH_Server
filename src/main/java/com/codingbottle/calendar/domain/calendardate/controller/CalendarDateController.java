@@ -1,6 +1,6 @@
 package com.codingbottle.calendar.domain.calendardate.controller;
 
-import com.codingbottle.calendar.domain.calendardate.dto.MonthlyCalendarResponse;
+import com.codingbottle.calendar.domain.calendardate.dto.MonthlyCalendarReqDto;
 import com.codingbottle.calendar.domain.calendardate.entity.CalendarDate;
 import com.codingbottle.calendar.domain.calendardate.repository.CalendarDateRepository;
 import com.codingbottle.calendar.global.api.RspTemplate;
@@ -20,14 +20,14 @@ public class CalendarDateController {
     private final CalendarDateRepository calendarDateRepository;
 
     @GetMapping("/calendars/year/{year}/month/{month}")
-    public RspTemplate<MonthlyCalendarResponse> handleGetMonthlyCalendar(
+    public RspTemplate<MonthlyCalendarReqDto> handleGetMonthlyCalendar(
             @PathVariable int year,
             @PathVariable int month,
              Authentication authentication
     ) {
         List<CalendarDate> calendarDates = calendarDateRepository.findByMemberIdAndYearAndMonth(year, month,
                 Long.parseLong(authentication.getName()));
-        MonthlyCalendarResponse rspDto = MonthlyCalendarResponse.from(calendarDates);
+        MonthlyCalendarReqDto rspDto = MonthlyCalendarReqDto.from(calendarDates);
 
         return new RspTemplate<>(HttpStatus.OK,
                 year +"년 " + month + "월 월별 캘린더",
