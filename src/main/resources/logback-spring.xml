@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration scan="true" scanPeriod="30 seconds"> <!-- logback 구현체가 설정을 확인하는 주기 -->
+
+    <property name="logdir" value="./logs" />   <!-- log를 저장할 디렉토리 -->
+    <property name="file_pattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n" />  <!-- 파일 이름 패턴 -->
+
+    <!-- 개발 환경에서 console에만 출력 -->
+    <springProfile name="!prod">
+        <include resource="console-appender.xml" />
+
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+    <!-- 배포할 때 파일에 로그 저장 -->
+    <springProfile name="prod">
+        <include resource="file-info-appender.xml" />
+        <include resource="file-warn-appender.xml" />
+        <include resource="file-error-appender.xml" />
+
+        <root level="INFO">
+            <appender-ref ref="INFO_FILE"/>
+            <appender-ref ref="WARN_FILE"/>
+            <appender-ref ref="ERROR_FILE"/>
+        </root>
+    </springProfile>
+
+</configuration>
