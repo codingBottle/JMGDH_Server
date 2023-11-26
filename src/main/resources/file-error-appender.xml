@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<included>
+    <!-- File Appender for ERROR -->
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logdir}/error/error.log</file>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <!-- ERROR 레벨만 출력 -->
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${logdir}/error/error-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- 백업된 로그 파일의 최대 개수 -->
+            <maxHistory>31</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${file_pattern}</pattern>
+        </encoder>
+    </appender>
+</included>
