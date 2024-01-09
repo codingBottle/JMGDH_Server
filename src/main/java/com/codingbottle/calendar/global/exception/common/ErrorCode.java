@@ -14,6 +14,7 @@ public enum ErrorCode {
     // 인증 - 로그인 시도
     MISMATCHED_SIGNIN_INFO(401, "잘못된 로그인 정보입니다."),
     USER_NOT_FOUND_AT_LOGIN(401, "존재하지 않는 계정입니다. 회원가입 후 로그인해주세요."),
+    MISMATCHED_SIGNIN_TYPE(401, "이미 가입된 회원입니다. 다른 로그인 방법을 확인해주세요."),
 
     // 인증 - 토큰
     NOT_EXISTS_AUTH_HEADER(401, "Authorization Header가 빈 값입니다."),

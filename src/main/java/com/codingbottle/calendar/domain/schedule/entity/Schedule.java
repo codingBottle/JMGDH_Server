@@ -1,7 +1,7 @@
 package com.codingbottle.calendar.domain.schedule.entity;
 
 import com.codingbottle.calendar.domain.calendardate.entity.CalendarDate;
-import com.codingbottle.calendar.domain.common.BaseEntity;
+import com.codingbottle.calendar.domain.common.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +12,7 @@ import java.time.LocalTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Schedule extends BaseEntity {
+public class Schedule extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

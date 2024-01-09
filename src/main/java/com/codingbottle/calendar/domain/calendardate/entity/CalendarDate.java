@@ -1,6 +1,6 @@
 package com.codingbottle.calendar.domain.calendardate.entity;
 
-import com.codingbottle.calendar.domain.common.BaseEntity;
+import com.codingbottle.calendar.domain.common.BaseTimeEntity;
 import com.codingbottle.calendar.domain.member.entity.Member;
 import com.codingbottle.calendar.domain.schedule.entity.Schedule;
 import lombok.AccessLevel;
@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class CalendarDate extends BaseEntity {
+public class CalendarDate extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
