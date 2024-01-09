@@ -50,6 +50,12 @@ dependencies {
 
 	// gson 의존성 추가
 	implementation 'com.google.code.gson:gson:2.8.9'
+
+	// OAuth2 의존성 추가
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+	// redis 의존성 추가
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 }
 
 tasks.named('test') {
