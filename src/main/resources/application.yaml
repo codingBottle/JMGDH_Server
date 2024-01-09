@@ -22,6 +22,9 @@ spring:
           google:
             clientId: ${OAUTH2_GOOGLE_ID}
             clientSecret: ${OAUTH2_GOOGLE_SECRET}
+            redirect-uri:
+            - https://ec2-3-36-232-70.ap-northeast-2.compute.amazonaws.com:8080/login/oauth2/code/google
+            # - http://localhost:8080/login/oauth2/code/google -> 로컬로 로그인 할 때
             scope:
               - email
               - profile
