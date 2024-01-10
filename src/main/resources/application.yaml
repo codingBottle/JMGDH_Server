@@ -14,6 +14,7 @@ spring:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
         format_sql: true
         default_batch_fetch_size: 100
+    open-in-view: false
   # OAuth2 클라이언트 설정
   security:
     oauth2:
@@ -32,12 +33,11 @@ spring:
           google:
             # access_type를 offline으로 설정해야 refreshToken이 발급 됨
             authorizationUri: https://accounts.google.com/o/oauth2/auth?access_type=offline
-  # 레디스 설정
+  
   redis:
     host: ${REDIS_IP_ADDRESS}
     port: 6379
     password: ${REDIS_PASSWORD}
-
 
 jwt:
   key: ${JWT_SECRET_KEY}
