@@ -1,9 +1,12 @@
 package com.codingbottle.calendar.domain.daterepeater;
 
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.IntStream;
 
+@NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class DateRepeater {
     static final int EVERY_WEEK = 1;
     static final int EVERY_TWO_WEEKS = 2;
@@ -20,7 +23,7 @@ public class DateRepeater {
     }
 
     private static List<LocalDate> repeatByWeek(LocalDate startDate, int weekInterval, int repeatCount) {
-        return IntStream.range(0, repeatCount)
+        return IntStream.rangeClosed(0, repeatCount)
                 .mapToObj(i -> startDate.plusWeeks(weekInterval * i))
                 .toList();
     }

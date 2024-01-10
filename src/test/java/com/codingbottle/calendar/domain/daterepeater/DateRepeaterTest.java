@@ -14,7 +14,7 @@ class DateRepeaterTest {
     void 날짜를_반복간격_기준으로_반복횟수만큼_더하여_반환할_수_있다() {
         //given
         LocalDate startDate = LocalDate.of(2021, 1, 1);
-        int repeatCount = 3;
+        int repeatCount = 2;
 
         List<LocalDate> expectedDatesWithEveryWeeks = Arrays.asList(
                 LocalDate.of(2021, 1, 1),
