@@ -15,6 +15,29 @@ spring:
         format_sql: true
         default_batch_fetch_size: 100
     open-in-view: false
+  # OAuth2 클라이언트 설정
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: ${OAUTH2_GOOGLE_ID}
+            clientSecret: ${OAUTH2_GOOGLE_SECRET}
+            redirect-uri: https://calendars2.duckdns.org/login/oauth2/code/google
+            #  http://localhost:8080/login/oauth2/code/google-> 로컬로 로그인 할 때
+            scope:
+              - email
+              - profile
+              - https://www.googleapis.com/auth/calendar
+        provider:
+          google:
+            # access_type를 offline으로 설정해야 refreshToken이 발급 됨
+            authorizationUri: https://accounts.google.com/o/oauth2/auth?access_type=offline
+  
+  redis:
+    host: ${REDIS_IP_ADDRESS}
+    port: 6379
+    password: ${REDIS_PASSWORD}
 
 jwt:
   key: ${JWT_SECRET_KEY}
