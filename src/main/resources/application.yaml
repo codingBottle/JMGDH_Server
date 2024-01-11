@@ -31,7 +31,8 @@ spring:
         provider:
           google:
             # access_type를 offline으로 설정해야 refreshToken이 발급 됨
-            authorizationUri: https://accounts.google.com/o/oauth2/auth?access_type=offline
+            # refresh 토큰을 처음 로그인에만 발급해주기에 consent로 설정해서 상시 발급받도록 한다
+            authorizationUri: https://accounts.google.com/o/oauth2/auth?access_type=offline&prompt=consent
   # 레디스 설정
   redis:
     host: ${REDIS_IP_ADDRESS}
