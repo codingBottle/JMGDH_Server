@@ -43,7 +43,7 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
         String accessToken = authorizedClient.getAccessToken().getTokenValue();
         String refreshToken = authorizedClient.getRefreshToken().getTokenValue();
 
-        log.info((String) authentication.getCredentials());
+        // log.info((String) authentication.getCredentials());
         log.info(String.valueOf(authorizedClient.getAccessToken().getExpiresAt()));
         log.info(refreshToken);
         log.info(accessToken);
