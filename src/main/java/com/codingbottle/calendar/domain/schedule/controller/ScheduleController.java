@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -25,14 +26,16 @@ public class ScheduleController {
     // 특정 날짜에 일정 등록
     @PostMapping("/schedules")
     public ResponseEntity<RspTemplate<Void>> handleCreate(
-            @RequestBody ScheduleCreateReqDto reqDto,
+            @RequestBody @Validated ScheduleCreateReqDto reqDto,
             Authentication authentication
     ) {
         scheduleService.create(reqDto, Long.parseLong(authentication.getName()));
 
-        RspTemplate<Void> rspTemplate = new RspTemplate<>(HttpStatus.CREATED,
-                reqDto.date().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-                        + " 일정 생성");
+        String rspMessage = reqDto.targetDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+                + " 일정 생성. 반복주기: "
+                + reqDto.repeatInterval().description != null ? reqDto.repeatInterval().description : "없음"
+                + ", 반복횟수: " + reqDto.repeatCount() + "회";
+        RspTemplate<Void> rspTemplate = new RspTemplate<>(HttpStatus.CREATED, rspMessage);
         return ResponseEntity.status(HttpStatus.CREATED).body(rspTemplate);
     }
 
