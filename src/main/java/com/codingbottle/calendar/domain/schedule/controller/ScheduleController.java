@@ -4,6 +4,7 @@ import com.codingbottle.calendar.domain.calendardate.entity.CalendarDate;
 import com.codingbottle.calendar.domain.calendardate.repository.CalendarDateRepository;
 import com.codingbottle.calendar.domain.schedule.dto.ScheduleCreateReqDto;
 import com.codingbottle.calendar.domain.schedule.dto.ScheduleListRspDto;
+import com.codingbottle.calendar.domain.schedule.dto.ScheduleUpdateRsqDto;
 import com.codingbottle.calendar.domain.schedule.service.ScheduleService;
 import com.codingbottle.calendar.global.api.RspTemplate;
 import lombok.RequiredArgsConstructor;
@@ -55,6 +56,30 @@ public class ScheduleController {
                 rspDto);
     }
 
+    //  일정 수정
+    @PatchMapping("/schedules/{id}")
+    public ResponseEntity<RspTemplate<Void>> handleUpdate(
+            @PathVariable Long id,
+            @RequestBody ScheduleUpdateRsqDto reqDto,
+            Authentication authentication
+    ) {
+        scheduleService.update(id, reqDto, Long.parseLong(authentication.getName()));
 
+        RspTemplate<Void> rspTemplate = new RspTemplate<>(HttpStatus.OK,
+                "일정이 수정되었습니다.");
+        return ResponseEntity.status(HttpStatus.OK).body(rspTemplate);
+    }
 
+    //  일정 삭제
+    @DeleteMapping("/schedules/{id}")
+    public ResponseEntity<RspTemplate<Void>> handleDelete(
+            @PathVariable Long id,
+            Authentication authentication
+    ) {
+        scheduleService.delete(id, Long.parseLong(authentication.getName()));
+
+        RspTemplate<Void> rspTemplate = new RspTemplate<>(HttpStatus.OK,
+                "일정이 삭제되었습니다");
+        return ResponseEntity.status(HttpStatus.OK).body(rspTemplate);
+    }
 }
