@@ -70,7 +70,6 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
         Map<String, Object> claims = new HashMap<>();
         claims.put("memberId", member.getMemberId()); // memberId 값 넣음
         claims.put("roles", member.getRole());
-        claims.put("email", member.getEmail());
 
         String audience = String.valueOf(member.getMemberId()); // audience에 memberId 넣음
 

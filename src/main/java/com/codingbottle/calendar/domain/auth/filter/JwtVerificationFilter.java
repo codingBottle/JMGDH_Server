@@ -69,9 +69,8 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     // SecurityContextHolder에 Authentication 객체 올리는 메소드
     private void setAuthenticationToContext(Claims claims) {
         long memberId = Long.parseLong(claims.getAudience()); // claims에서 memberId를 받아온다.
-        String email = (String) claims.get("email", String.class);
         List<GrantedAuthority> authorities = authorityUtils.createAuthorities((List) claims.get("roles")); // claims에 있는 roles를 바탕으로 권한을 만들어준다
-        Authentication authentication = new UsernamePasswordAuthenticationToken(email, null, authorities);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(memberId, null, authorities);
         SecurityContextHolder.getContext().setAuthentication(authentication); // SecurityContextHolder에 권한, 유저 객체 정보를 저장한다.
     }
 }
