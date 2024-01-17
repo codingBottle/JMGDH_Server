@@ -29,11 +29,4 @@ public class MemberController {
 
         return new ResponseEntity<>(memberResponseDto, HttpStatus.OK);
     }
-
-    @GetMapping("/test")
-    public ResponseEntity<String> getTest(@AuthenticationPrincipal String email) {
-        var client = authorizedClientService.loadAuthorizedClient("google", email);
-
-        return new ResponseEntity<>(client.getRefreshToken().getTokenValue().toString(), HttpStatus.OK);
-    }
 }
