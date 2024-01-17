@@ -52,4 +52,13 @@ public class Schedule extends BaseTimeEntity {
         this.calendarDate = calendarDate;
         this.isAllDay = true;
     }
+
+    //  update
+    public void updateFrom(Schedule updatedSchedule) {
+        this.title = updatedSchedule.title;
+        this.startTime = updatedSchedule.startTime;
+        this.endTime = updatedSchedule.endTime;
+        this.isAllDay = updatedSchedule.isAllDay;
+        this.calendarDate = updatedSchedule.calendarDate;
+    }
 }
