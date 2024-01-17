@@ -42,4 +42,11 @@ public class CalendarDate extends BaseTimeEntity {
     public LocalDate getLocalDate() {
         return LocalDate.of(year, month, day);
     }
+
+    //  날짜 업데이트
+    public void updateDate(LocalDate newDate) {
+        this.year = newDate.getYear();
+        this.month = newDate.getMonthValue();
+        this.day = newDate.getDayOfMonth();
+    }
 }
