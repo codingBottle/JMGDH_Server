@@ -1,12 +1,15 @@
 package com.codingbottle.calendar.domain.schedule.entity;
 
-import com.codingbottle.calendar.domain.calendardate.entity.CalendarDate;
 import com.codingbottle.calendar.domain.common.BaseTimeEntity;
+import com.codingbottle.calendar.domain.member.entity.Member;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Getter
@@ -20,45 +23,101 @@ public class Schedule extends BaseTimeEntity {
     @Column(nullable = false)
     private String title;
 
+    @Column(nullable = false)
+    private LocalDate startDate;
+    @Column(nullable = false)
+    private LocalDate endDate;
+
     @Column(nullable = true)
-    private LocalTime startTime;
+    private LocalTime timeOfStartDate;
     @Column(nullable = true)
-    private LocalTime endTime;
+    private LocalTime timeOfEndDate;
+
     @Column(nullable = false)
     private boolean isAllDay;
 
-    @ManyToOne
-    @JoinColumn(name = "calendar_date_id", nullable = false)
-    private CalendarDate calendarDate;
+    @Column(nullable = false)
+    private boolean isRepeat;
+    @Column(nullable = true)
+    private String repeatCode; // 반복 일정을 한꺼번에 삭제하기 위함. ex) 'delete ... where repeatCode = :?'
 
-    public static Schedule notAllDay(String title, LocalTime startTime, LocalTime endTime, CalendarDate calendarDate){
-        return new Schedule(title, startTime, endTime, calendarDate);
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
+
+    public static Schedule notAllDay(Member member, String title, LocalDate startDate, LocalDate endDate
+            , LocalTime timeOfStartDate, LocalTime timeOfEndDate){
+        return Schedule.builder()
+                .member(member)
+                .title(title)
+                .startDate(startDate)
+                .endDate(endDate)
+                .timeOfStartDate(timeOfStartDate)
+                .timeOfEndDate(timeOfEndDate)
+                .isAllDay(false)
+                .isRepeat(false)
+                .build();
     }
 
-    public static Schedule allDay(String title, CalendarDate calendarDate){
-        return new Schedule(title, calendarDate);
+    public static Schedule allDay(Member member, String title, LocalDate startDate, LocalDate endDate){
+        return Schedule.builder()
+                .member(member)
+                .title(title)
+                .startDate(startDate)
+                .endDate(endDate)
+                .isAllDay(true)
+                .isRepeat(false)
+                .build();
     }
 
-    private Schedule(String title, LocalTime startTime, LocalTime endTime, CalendarDate calendarDate) {
+    @Builder
+    private Schedule(String title, LocalDate startDate, LocalDate endDate, LocalTime timeOfStartDate, LocalTime timeOfEndDate, boolean isAllDay, boolean isRepeat, String repeatCode, Member member) {
         this.title = title;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.calendarDate = calendarDate;
-        this.isAllDay = false;
-    }
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.timeOfStartDate = timeOfStartDate;
+        this.timeOfEndDate = timeOfEndDate;
+        this.isAllDay = isAllDay;
+        this.isRepeat = isRepeat;
+        this.repeatCode = repeatCode;
+        this.member = member;
+        if (this.isRepeat && this.repeatCode == null) {
+            throw new IllegalStateException("반복코드 없이 반복일정을 생성할 수 없습니다.");
+        }
+        if (this.startDate.isAfter(this.endDate)) {
+            throw new IllegalStateException("시작일이 종료일보다 늦을 수 없습니다.");
+        }
 
-    private Schedule(String title, CalendarDate calendarDate) {
-        this.title = title;
-        this.calendarDate = calendarDate;
-        this.isAllDay = true;
+        // 종일 일정이 아닌 경우에만 검사
+        if (! this.isAllDay) {
+            if (this.timeOfStartDate == null || this.timeOfEndDate == null) {
+                throw new IllegalStateException("종일 일정이 아닌 경우 시간이 존재해야 합니다.");
+            }
+            LocalDateTime startDateTime = LocalDateTime.of(this.startDate, this.timeOfStartDate);
+            LocalDateTime endDateTime = LocalDateTime.of(this.endDate, this.timeOfEndDate);
+            if (startDateTime.isAfter(endDateTime)) {
+                throw new IllegalStateException("시작시간이 종료시간보다 늦을 수 없습니다.");
+            }
+        }
+
+        if (this.isAllDay &&
+                (this.timeOfStartDate != null || this.timeOfEndDate != null)) {
+            throw new IllegalStateException("종일 일정은 시간을 가질 수 없습니다.");
+        }
+
+
+
+
+
     }
 
     //  update
-    public void updateFrom(Schedule updatedSchedule) {
-        this.title = updatedSchedule.title;
-        this.startTime = updatedSchedule.startTime;
-        this.endTime = updatedSchedule.endTime;
-        this.isAllDay = updatedSchedule.isAllDay;
-        this.calendarDate = updatedSchedule.calendarDate;
+    public void updateFrom(Schedule scheduleToUpdate) {
+        this.title = scheduleToUpdate.title;
+        this.startDate = scheduleToUpdate.startDate;
+        this.endDate = scheduleToUpdate.endDate;
+        this.timeOfStartDate = scheduleToUpdate.timeOfStartDate;
+        this.timeOfEndDate = scheduleToUpdate.timeOfEndDate;
+        this.isAllDay = scheduleToUpdate.isAllDay;
     }
 }

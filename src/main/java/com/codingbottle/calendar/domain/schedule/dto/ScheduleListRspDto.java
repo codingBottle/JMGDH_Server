@@ -1,13 +1,11 @@
 package com.codingbottle.calendar.domain.schedule.dto;
 
-import com.codingbottle.calendar.domain.calendardate.entity.CalendarDate;
 import com.codingbottle.calendar.domain.schedule.entity.Schedule;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 
 @AllArgsConstructor
 @Getter
@@ -15,26 +13,33 @@ public class ScheduleListRspDto {
     List<ScheduleDto> schedules;
 
     // Optional이 비어있으면, 빈 SchueduleDto 리스트 반환
-    public static ScheduleListRspDto from(Optional<CalendarDate> calendarDate) {
-        List<ScheduleDto> scheduleDtos = calendarDate
-                .map(CalendarDate::getSchedules)
-                .map(ScheduleDto::from)
-                .orElseGet(List::of);
-        return new ScheduleListRspDto(scheduleDtos);
+    public static ScheduleListRspDto from(List<Schedule> schedules) {
+        return new ScheduleListRspDto(ScheduleDto.from(schedules));
     }
 
     @Getter
     static class ScheduleDto {
         long id;
         String title;
-        String startTime;
-        String endTime;
+
+        String startDate;
+        String timeOfStartDate;
+        String endDate;
+        String timeOfEndDateTime;
+
+        boolean isRepeat;
         boolean isAllDay;
         ScheduleDto(Schedule schedule) {
             this.id = schedule.getId();
             this.title = schedule.getTitle();
-            this.startTime = schedule.getStartTime() == null ? "" : schedule.getStartTime().format(DateTimeFormatter.ofPattern("HH:mm"));
-            this.endTime = schedule.getEndTime() == null ? "" : schedule.getEndTime().format(DateTimeFormatter.ofPattern("HH:mm"));
+
+            this.timeOfStartDate = schedule.getTimeOfStartDate() == null ? "" : schedule.getTimeOfStartDate().format(DateTimeFormatter.ofPattern("HH:mm"));
+            this.timeOfEndDateTime = schedule.getTimeOfEndDate() == null ? "" : schedule.getTimeOfEndDate().format(DateTimeFormatter.ofPattern("HH:mm"));
+
+            this.startDate = schedule.getStartDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            this.endDate = schedule.getEndDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+            this.isRepeat = schedule.isRepeat();
             this.isAllDay = schedule.isAllDay();
         }
 
