@@ -68,17 +68,17 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
 
     private String delegateAccessToken(Member member) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("memberId", member.getMemberId()); // memberId 값 넣음
+        claims.put("memberId", member.getId()); // memberId 값 넣음
         claims.put("roles", member.getRole());
 
-        String audience = String.valueOf(member.getMemberId()); // audience에 memberId 넣음
+        String audience = String.valueOf(member.getId()); // audience에 memberId 넣음
 
         String accessToken = jwtTokenizer.generateAccessToken(claims, audience);
 
         return accessToken;
     }
     private String delegateRefreshToken(Member member) {
-        String audience = String.valueOf(member.getMemberId()); // audience에 memberId 넣음
+        String audience = String.valueOf(member.getId()); // audience에 memberId 넣음
         String refreshToken = jwtTokenizer.generateRefreshToken(audience);
 
         return refreshToken;

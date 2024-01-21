@@ -55,7 +55,7 @@ public class MemberService {
     public Member updateMember(Member member, String accessToken) {
 
         Member updateMember = Member.builder()
-                .memberId(member.getMemberId())
+                .id(member.getId())
                 .nickname(member.getNickname())
                 .email(member.getEmail())
                 .password(member.getPassword())

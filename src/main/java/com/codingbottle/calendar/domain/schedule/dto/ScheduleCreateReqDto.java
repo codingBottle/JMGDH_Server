@@ -14,13 +14,16 @@ public record ScheduleCreateReqDto(
         String title,
         @JsonFormat(pattern = "yyyy-MM-dd", shape = Shape.STRING)
         @NotNull
-        LocalDate targetDate,
+        LocalDate startDate,
+        @JsonFormat(pattern = "yyyy-MM-dd", shape = Shape.STRING)
+        @NotNull
+        LocalDate endDate,
         @NotNull(message = "종일 여부를 입력해주세요.")
         Boolean isAllDay,
         @JsonFormat(pattern = "HH:mm", shape = Shape.STRING)
-        LocalTime startTime,
+        LocalTime timeOfStartDate,
         @JsonFormat(pattern = "HH:mm", shape = Shape.STRING)
-        LocalTime endTime,
+        LocalTime timeOfEndDate,
 
         // 반복주기 repeatInterval을 반복횟수 repeatCount만큼 반복한다.
         RepeatInterval repeatInterval,

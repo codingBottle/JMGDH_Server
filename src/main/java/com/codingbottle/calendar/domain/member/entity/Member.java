@@ -16,7 +16,7 @@ import java.util.List;
 public class Member extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long memberId;
+    private Long id;
 
     @Column(nullable = false, length = 30)
     private String nickname;
@@ -34,8 +34,8 @@ public class Member extends BaseTimeEntity {
     private String googleAccessToken;
 
     @Builder
-    protected Member(String nickname, String email, String password, Long memberId, List<String> role, String googleAccessToken) {
-        this.memberId = memberId;
+    protected Member(String nickname, String email, String password, Long id, List<String> role, String googleAccessToken) {
+        this.id = id;
         this.nickname = nickname;
         this.email = email;
         this.password = password;
