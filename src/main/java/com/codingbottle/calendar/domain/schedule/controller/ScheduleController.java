@@ -32,8 +32,9 @@ public class ScheduleController {
 
         String rspMessage = reqDto.startDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
                 + " 일정 생성. 반복주기: "
-                + reqDto.repeatInterval().description != null ? reqDto.repeatInterval().description : "없음"
-                + ", 반복횟수: " + reqDto.repeatCount() + "회";
+                + (reqDto.repeatInterval() != null ? reqDto.repeatInterval().description : "없음")
+                + ", 반복횟수: " + (reqDto.repeatCount() != null ? String.valueOf(reqDto.repeatCount()) : 0 + "회");
+
         RspTemplate<Void> rspTemplate = new RspTemplate<>(HttpStatus.CREATED, rspMessage);
         return ResponseEntity.status(HttpStatus.CREATED).body(rspTemplate);
     }

@@ -104,11 +104,6 @@ public class Schedule extends BaseTimeEntity {
                 (this.timeOfStartDate != null || this.timeOfEndDate != null)) {
             throw new IllegalStateException("종일 일정은 시간을 가질 수 없습니다.");
         }
-
-
-
-
-
     }
 
     //  update
