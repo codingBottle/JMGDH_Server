@@ -30,6 +30,7 @@ public class ScheduleService {
         Integer repeatCount = reqDto.repeatCount();
         LocalDate startDate = reqDto.startDate();
         LocalDate endDate = reqDto.endDate();
+        String colorCode = reqDto.colorCode();
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NoSuchElementException("회원을 찾을 수 없습니다."));
@@ -37,9 +38,9 @@ public class ScheduleService {
         // 종일 여부 검사
         Schedule schedule;
         if (reqDto.isAllDay()) {
-            schedule = Schedule.allDay(member, title, startDate, endDate);
+            schedule = Schedule.allDay(member, title, startDate, endDate, colorCode);
         } else {
-            schedule = Schedule.notAllDay(member, title, startDate, endDate, reqDto.timeOfStartDate(), reqDto.timeOfEndDate());
+            schedule = Schedule.notAllDay(member, title, startDate, endDate, reqDto.timeOfStartDate(), reqDto.timeOfEndDate(), colorCode);
         }
 
         // 반복주기에 따라 단일 일정 or 반복 일정 생성

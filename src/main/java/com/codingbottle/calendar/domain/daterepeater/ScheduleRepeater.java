@@ -36,6 +36,7 @@ public class ScheduleRepeater {
                         .timeOfStartDate(scheduleToRepeat.getTimeOfStartDate())
                         .timeOfEndDate(scheduleToRepeat.getTimeOfEndDate())
                         .isAllDay(scheduleToRepeat.isAllDay())
+                        .colorCode(scheduleToRepeat.getColorCode())
                         .isRepeat(true)
                         .repeatCode(repeatCode)
                         .build())

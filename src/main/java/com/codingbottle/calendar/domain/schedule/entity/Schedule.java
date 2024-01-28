@@ -2,6 +2,7 @@ package com.codingbottle.calendar.domain.schedule.entity;
 
 import com.codingbottle.calendar.domain.common.BaseTimeEntity;
 import com.codingbottle.calendar.domain.member.entity.Member;
+import com.codingbottle.calendar.global.utils.ColorUtil;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,14 +28,15 @@ public class Schedule extends BaseTimeEntity {
     private LocalDate startDate;
     @Column(nullable = false)
     private LocalDate endDate;
-
     @Column(nullable = true)
     private LocalTime timeOfStartDate;
     @Column(nullable = true)
     private LocalTime timeOfEndDate;
-
     @Column(nullable = false)
     private boolean isAllDay;
+
+    @Column(nullable = false)
+    private String colorCode;
 
     @Column(nullable = false)
     private boolean isRepeat;
@@ -46,7 +48,7 @@ public class Schedule extends BaseTimeEntity {
     private Member member;
 
     public static Schedule notAllDay(Member member, String title, LocalDate startDate, LocalDate endDate
-            , LocalTime timeOfStartDate, LocalTime timeOfEndDate){
+            , LocalTime timeOfStartDate, LocalTime timeOfEndDate, String colorCode){
         return Schedule.builder()
                 .member(member)
                 .title(title)
@@ -55,29 +57,32 @@ public class Schedule extends BaseTimeEntity {
                 .timeOfStartDate(timeOfStartDate)
                 .timeOfEndDate(timeOfEndDate)
                 .isAllDay(false)
+                .colorCode(colorCode)
                 .isRepeat(false)
                 .build();
     }
 
-    public static Schedule allDay(Member member, String title, LocalDate startDate, LocalDate endDate){
+    public static Schedule allDay(Member member, String title, LocalDate startDate, LocalDate endDate, String colorCode){
         return Schedule.builder()
                 .member(member)
                 .title(title)
                 .startDate(startDate)
                 .endDate(endDate)
                 .isAllDay(true)
+                .colorCode(colorCode)
                 .isRepeat(false)
                 .build();
     }
 
     @Builder
-    private Schedule(String title, LocalDate startDate, LocalDate endDate, LocalTime timeOfStartDate, LocalTime timeOfEndDate, boolean isAllDay, boolean isRepeat, String repeatCode, Member member) {
+    private Schedule(String title, LocalDate startDate, LocalDate endDate, LocalTime timeOfStartDate, LocalTime timeOfEndDate, boolean isAllDay, String colorCode, boolean isRepeat, String repeatCode, Member member) {
         this.title = title;
         this.startDate = startDate;
         this.endDate = endDate;
         this.timeOfStartDate = timeOfStartDate;
         this.timeOfEndDate = timeOfEndDate;
         this.isAllDay = isAllDay;
+        this.colorCode  = ColorUtil.isColorCode(colorCode) ? colorCode : ColorUtil.SCHEDULE_DEFAULT_COLOR_CODE; // 색상 미입력 시 기본 연분홍으로 결정됨
         this.isRepeat = isRepeat;
         this.repeatCode = repeatCode;
         this.member = member;
