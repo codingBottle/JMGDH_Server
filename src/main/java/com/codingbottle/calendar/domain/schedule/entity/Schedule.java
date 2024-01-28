@@ -98,6 +98,10 @@ public class Schedule extends BaseTimeEntity {
             if (startDateTime.isAfter(endDateTime)) {
                 throw new IllegalStateException("시작시간이 종료시간보다 늦을 수 없습니다.");
             }
+            // 두 시간의 차이는 24시간 이내여야 함
+            if (startDateTime.plusHours(24).isBefore(endDateTime)) {
+                throw new IllegalStateException("종일 일정이 아닐 경우 시작시간과 종료시간의 차이는 24시간 이내여야 합니다.");
+            }
         }
 
         if (this.isAllDay &&
