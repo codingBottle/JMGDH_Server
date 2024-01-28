@@ -98,4 +98,11 @@ public class ScheduleService {
     public List<Schedule> findByYearAndMonth(int year, int month, long memberId) {
         return scheduleRepository.findByYearAndMonth(year, month, memberId);
     }
+
+    public List<Schedule> findByStartDateToEndDate(LocalDate startDate, LocalDate endDate, long memberId) {
+        if (startDate.isAfter(endDate)) {
+            throw new IllegalStateException("시작일이 종료일보다 늦을 수 없습니다.");
+        }
+        return scheduleRepository.findByStartDateToEndDate(startDate, endDate, memberId);
+    }
 }
