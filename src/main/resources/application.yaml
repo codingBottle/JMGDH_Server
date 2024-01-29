@@ -28,7 +28,6 @@ spring:
             scope:
               - email
               - profile
-              - https://www.googleapis.com/auth/calendar
         provider:
           google:
             # access_type를 offline으로 설정해야 refreshToken이 발급 됨

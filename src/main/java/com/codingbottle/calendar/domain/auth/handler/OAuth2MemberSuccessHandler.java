@@ -3,8 +3,6 @@ package com.codingbottle.calendar.domain.auth.handler;
 import com.codingbottle.calendar.domain.auth.jwt.JwtTokenizer;
 import com.codingbottle.calendar.domain.member.entity.Member;
 import com.codingbottle.calendar.domain.member.service.MemberService;
-import com.codingbottle.calendar.global.exception.common.BusinessException;
-import com.codingbottle.calendar.global.exception.common.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
@@ -42,8 +40,7 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
         var authorizedClient = authorizedClientService.loadAuthorizedClient("google", authentication.getName());
         String accessToken = authorizedClient.getAccessToken().getTokenValue();
         String refreshToken = authorizedClient.getRefreshToken().getTokenValue();
-
-        // log.info((String) authentication.getCredentials());
+        
         log.info(String.valueOf(authorizedClient.getAccessToken().getExpiresAt()));
         log.info(refreshToken);
         log.info(accessToken);
@@ -51,7 +48,7 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
 
         memberService.oAuth2CheckMember(email, nickname, accessToken); // 가입 되어 있으면 로그인, 없으면 회원가입
 
-        Member member = memberService.getMemberByEmail(email).orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        Member member = memberService.getMemberByEmail(email);
         redirect(request, response, member);
 
     }
