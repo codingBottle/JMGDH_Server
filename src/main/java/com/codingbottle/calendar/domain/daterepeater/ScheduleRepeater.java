@@ -20,6 +20,7 @@ public class ScheduleRepeater {
             case EVERY_WEEK -> repeatByWeek(scheduleToRepeat, EVERY_WEEK,  repeatCount);
             case EVERY_TWO_WEEKS -> repeatByWeek(scheduleToRepeat, EVERY_TWO_WEEKS,  repeatCount);
             case EVERY_FOUR_WEEKS -> repeatByWeek(scheduleToRepeat, EVERY_FOUR_WEEKS,  repeatCount);
+            case EVERY_DAY -> repeatByEveryDay(scheduleToRepeat, repeatCount);
             default -> throw new IllegalArgumentException("지원하지 않는 반복구간입니다.");
         };
     }
@@ -27,19 +28,35 @@ public class ScheduleRepeater {
     private static List<Schedule> repeatByWeek(Schedule scheduleToRepeat, int weekInterval, int repeatCount) {
         String repeatCode = UUID.randomUUID().toString();
         return IntStream.rangeClosed(0, repeatCount)
-                .mapToObj(i -> {
-                    return Schedule.builder()
-                            .member(scheduleToRepeat.getMember())
-                            .title(scheduleToRepeat.getTitle())
-                            .startDate(scheduleToRepeat.getStartDate().plusWeeks(weekInterval * i))
-                            .endDate(scheduleToRepeat.getEndDate().plusWeeks(weekInterval * i))
-                            .timeOfStartDate(scheduleToRepeat.getTimeOfStartDate())
-                            .timeOfEndDate(scheduleToRepeat.getTimeOfEndDate())
-                            .isAllDay(scheduleToRepeat.isAllDay())
-                            .isRepeat(true)
-                            .repeatCode(repeatCode)
-                            .build();
-                })
+                .mapToObj(i -> Schedule.builder()
+                        .member(scheduleToRepeat.getMember())
+                        .title(scheduleToRepeat.getTitle())
+                        .startDate(scheduleToRepeat.getStartDate().plusWeeks((long) weekInterval * i))
+                        .endDate(scheduleToRepeat.getEndDate().plusWeeks((long) weekInterval * i))
+                        .timeOfStartDate(scheduleToRepeat.getTimeOfStartDate())
+                        .timeOfEndDate(scheduleToRepeat.getTimeOfEndDate())
+                        .isAllDay(scheduleToRepeat.isAllDay())
+                        .colorCode(scheduleToRepeat.getColorCode())
+                        .isRepeat(true)
+                        .repeatCode(repeatCode)
+                        .build())
+                .toList();
+    }
+
+    private static List<Schedule> repeatByEveryDay(Schedule scheduleToRepeat, int repeatCount) {
+        String repeatCode = UUID.randomUUID().toString();
+        return IntStream.rangeClosed(0, repeatCount)
+                .mapToObj(i -> Schedule.builder()
+                        .member(scheduleToRepeat.getMember())
+                        .title(scheduleToRepeat.getTitle())
+                        .startDate(scheduleToRepeat.getStartDate().plusDays(i))
+                        .endDate(scheduleToRepeat.getEndDate().plusDays(i))
+                        .timeOfStartDate(scheduleToRepeat.getTimeOfStartDate())
+                        .timeOfEndDate(scheduleToRepeat.getTimeOfEndDate())
+                        .isAllDay(scheduleToRepeat.isAllDay())
+                        .isRepeat(true)
+                        .repeatCode(repeatCode)
+                        .build())
                 .toList();
     }
 }

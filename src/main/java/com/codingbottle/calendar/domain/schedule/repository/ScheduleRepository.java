@@ -24,4 +24,14 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     @Query("SELECT s.id FROM Schedule s WHERE s.repeatCode = :repeatCode")
     List<Long> findByRepeatCode(@Param("repeatCode") String repeatCode);
+
+    // startDate 혹은 endDate 파라미터 둘 중 하나라도 startDate와 endDate 사이에 있는 일정을 조회
+    @Query("SELECT s FROM Schedule s" +
+            " WHERE s.member.id = :memberId" +
+            " AND" +
+            " (:startDate BETWEEN s.startDate AND s.endDate" +
+            " OR" +
+            " :endDate BETWEEN s.startDate AND s.endDate)"
+    )
+    List<Schedule> findByStartDateToEndDate(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate, @Param("memberId") long memberId);
 }

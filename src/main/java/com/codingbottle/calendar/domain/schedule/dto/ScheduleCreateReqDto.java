@@ -25,6 +25,7 @@ public record ScheduleCreateReqDto(
         @JsonFormat(pattern = "HH:mm", shape = Shape.STRING)
         LocalTime timeOfEndDate,
 
+        String colorCode,
         // 반복주기 repeatInterval을 반복횟수 repeatCount만큼 반복한다.
         RepeatInterval repeatInterval,
         Integer repeatCount

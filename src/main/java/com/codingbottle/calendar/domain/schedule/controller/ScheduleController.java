@@ -7,6 +7,7 @@ import com.codingbottle.calendar.domain.schedule.entity.Schedule;
 import com.codingbottle.calendar.domain.schedule.service.ScheduleService;
 import com.codingbottle.calendar.global.api.RspTemplate;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -81,6 +82,21 @@ public class ScheduleController {
         ScheduleListRspDto rspDto = ScheduleListRspDto.from(schedules);
         return new RspTemplate<>(HttpStatus.OK,
                 LocalDate.of(year, month, day) + " 일정목록",
+                rspDto);
+    }
+
+    // 두 날짜 사이의 일정 조회 (주간일정 조회에 사용)
+    @GetMapping("/schedules/start-date/{startDate}/end-date/{endDate}")
+    public RspTemplate<ScheduleListRspDto> handleGetSchedulesBetWeenTwoDays(
+            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
+            Authentication authentication
+    ) {
+        List<Schedule> schedules = scheduleService.findByStartDateToEndDate(startDate, endDate, Long.parseLong(authentication.getName()));
+
+        ScheduleListRspDto rspDto = ScheduleListRspDto.from(schedules);
+        return new RspTemplate<>(HttpStatus.OK,
+                startDate + "부터 " + endDate + "사이의 일정 목록",
                 rspDto);
     }
 

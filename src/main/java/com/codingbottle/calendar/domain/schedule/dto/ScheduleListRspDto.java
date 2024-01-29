@@ -21,6 +21,7 @@ public class ScheduleListRspDto {
     static class ScheduleDto {
         long id;
         String title;
+        String colorCode;
 
         String startDate;
         String timeOfStartDate;
@@ -32,6 +33,7 @@ public class ScheduleListRspDto {
         ScheduleDto(Schedule schedule) {
             this.id = schedule.getId();
             this.title = schedule.getTitle();
+            this.colorCode = schedule.getColorCode();
 
             this.timeOfStartDate = schedule.getTimeOfStartDate() == null ? "" : schedule.getTimeOfStartDate().format(DateTimeFormatter.ofPattern("HH:mm"));
             this.timeOfEndDateTime = schedule.getTimeOfEndDate() == null ? "" : schedule.getTimeOfEndDate().format(DateTimeFormatter.ofPattern("HH:mm"));

@@ -17,13 +17,14 @@ public record ScheduleUpdateReqDto(
         @NotNull LocalDate endDate,
         @NotNull(message = "종일 여부를 입력해주세요.") Boolean isAllDay,
         @JsonFormat(pattern = "HH:mm", shape = JsonFormat.Shape.STRING) LocalTime timeOfStartDate,
-        @JsonFormat(pattern = "HH:mm", shape = JsonFormat.Shape.STRING) LocalTime timeOfEndDate
+        @JsonFormat(pattern = "HH:mm", shape = JsonFormat.Shape.STRING) LocalTime timeOfEndDate,
+        String colorCode
 ) {
     public Schedule toScheduleEntity(Member member) {
         if (isAllDay == null || !isAllDay) {
-            return Schedule.notAllDay(member, title, startDate, endDate, timeOfStartDate, timeOfEndDate);
+            return Schedule.notAllDay(member, title, startDate, endDate, timeOfStartDate, timeOfEndDate, colorCode);
         } else {
-            return Schedule.allDay(member, title, startDate, endDate);
+            return Schedule.allDay(member, title, startDate, endDate, colorCode);
         }
     }
 }
