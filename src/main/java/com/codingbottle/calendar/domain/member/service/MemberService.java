@@ -68,9 +68,15 @@ public class MemberService {
         return updateMember;
     }
 
-    @Transactional
-    public Optional<Member> getMemberByEmail(String email){
+    public Optional<Member> getOptionalMemberByEmail(String email){
         Optional<Member> member = memberRepository.findByEmail(email);
+
+        return member;
+    }
+
+    public Member getMemberByEmail(String email) {
+        Optional<Member> optionalMember = memberRepository.findByEmail(email);
+        Member member = optionalMember.orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         return member;
     }
@@ -83,7 +89,6 @@ public class MemberService {
 
     }
 
-    @Transactional
     // member가 존재하면 member 반환, 없으면 예외 처리
     public Member existsMemberById(Long memberId) {
         Optional<Member> member = memberRepository.findById(memberId);
@@ -100,7 +105,7 @@ public class MemberService {
     // 자체 회원가입 된 멤버, 가입이 안된 멤버 컨트롤 하는 로직
     @Transactional
     public Member oAuth2CheckMember(String email, String nickname, String accessToken) {
-        Optional<Member> optionalMember = getMemberByEmail(email);
+        Optional<Member> optionalMember = getOptionalMemberByEmail(email);
         Member member;
 
         // 가입이 안되어 있으면 회원가입

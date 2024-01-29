@@ -42,8 +42,11 @@ public enum ErrorCode {
     FILE_CANNOT_BE_DELETED(500, "파일을 삭제할 수 없습니다."),
 
     // INTERNAL SERVER ERROR
-    INTERNAL_SERVER_ERROR(500, "서버 내부 오류가 발생하였습니다.");
-    ;
+    INTERNAL_SERVER_ERROR(500, "서버 내부 오류가 발생하였습니다."),
+
+    // utils/converter
+    DATETIME_IS_NULL(401, "DateTime이 NULL값입니다."),
+    DATE_IS_NULL(401, "Date가 NULL값입니다.");
 
     private final int statusCode;
     private final String message;
