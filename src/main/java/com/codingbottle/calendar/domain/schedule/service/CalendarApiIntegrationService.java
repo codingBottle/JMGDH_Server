@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
@@ -85,6 +86,16 @@ public class CalendarApiIntegrationService {
                     endDate = googleCalendarConverter.convertDateTimeToLocalDate(event.getEnd().getDateTime());
                     startDateTime = googleCalendarConverter.convertDateTimeToLocalTime(event.getStart().getDateTime());
                     endDateTime = googleCalendarConverter.convertDateTimeToLocalTime(event.getEnd().getDateTime());
+
+                    LocalDateTime checkStartDateTime = LocalDateTime.of(startDate, startDateTime);
+                    LocalDateTime checkEndDateTime = LocalDateTime.of(endDate, endDateTime);
+
+                    // 두 시간의 차이가 24시간을 초과할 때 종일 일정으로 일정 추가
+                    if (checkStartDateTime.plusHours(24).isBefore(checkEndDateTime)) {
+                        startDateTime = null;
+                        endDateTime = null;
+                        isAllDay = true;
+                    }
                 }
                 // Date == not null, DateTime == null
                 else {
@@ -100,6 +111,7 @@ public class CalendarApiIntegrationService {
                         isAllDay,
                         startDateTime,
                         endDateTime,
+                        event.getColorId(),
                         null,
                         null
                 );
@@ -114,7 +126,7 @@ public class CalendarApiIntegrationService {
         AuthorizationCodeFlow flow = getAuthorizationCodeFlow();
 
         AuthorizationCodeRequestUrl authorizationUrl = flow.newAuthorizationUrl()
-                .setRedirectUri(LOCAL_REDIRECT_URI);
+                .setRedirectUri(REDIRECT_URI);
 
         // 사용자에게 권한 부여 URL을 전달하고, 사용자가 브라우저에서 이 URL로 이동하여 권한 부여를 합니다.
         return authorizationUrl.build();
@@ -124,7 +136,7 @@ public class CalendarApiIntegrationService {
         AuthorizationCodeFlow flow = getAuthorizationCodeFlow();
         // 사용자로부터 받은 인증 코드로 액세스 토큰 및 리프레시 토큰을 요청합니다.
         AuthorizationCodeTokenRequest tokenRequest = flow.newTokenRequest(code)
-                .setRedirectUri(LOCAL_REDIRECT_URI);
+                .setRedirectUri(REDIRECT_URI);
         Credential credential = flow.createAndStoreCredential(tokenRequest.execute(), null);
 
         return credential;
