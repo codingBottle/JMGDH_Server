@@ -17,8 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.UUID;
 
 @Slf4j
 public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
@@ -49,44 +48,40 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
     private void redirect(HttpServletRequest request, HttpServletResponse response, Member member) throws IOException {
         log.info("OAuth2 Login Success!!");
 
-        String accessToken = delegateAccessToken(member);
-        String refreshToken = delegateRefreshToken(member);
-
-        String uri = createURI(accessToken, refreshToken).toString();
+        String uri = createURI().toString();
+        // TODO UUID 캐시에 넣을 때, <UUID, memberId> 형태로 저장하면 될 듯
         getRedirectStrategy().sendRedirect(request, response, uri);
     }
 
-    private String delegateAccessToken(Member member) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("memberId", member.getId()); // memberId 값 넣음
-        claims.put("roles", member.getRole());
-
-        String audience = String.valueOf(member.getId()); // audience에 memberId 넣음
-
-        String accessToken = jwtTokenizer.generateAccessToken(claims, audience);
-
-        return accessToken;
-    }
-    private String delegateRefreshToken(Member member) {
-        String audience = String.valueOf(member.getId()); // audience에 memberId 넣음
-        String refreshToken = jwtTokenizer.generateRefreshToken(audience);
-
-        return refreshToken;
-    }
+//    private String delegateAccessToken(Member member) {
+//        Map<String, Object> claims = new HashMap<>();
+//        claims.put("memberId", member.getId()); // memberId 값 넣음
+//        claims.put("roles", member.getRole());
+//
+//        String audience = String.valueOf(member.getId()); // audience에 memberId 넣음
+//
+//        String accessToken = jwtTokenizer.generateAccessToken(claims, audience);
+//
+//        return accessToken;
+//    }
+//    private String delegateRefreshToken(Member member) {
+//        String audience = String.valueOf(member.getId()); // audience에 memberId 넣음
+//        String refreshToken = jwtTokenizer.generateRefreshToken(audience);
+//
+//        return refreshToken;
+//    }
 
     // OAuth2 로그인 성공 시 토큰값과 함께 반환될 URL 설정하는 부분
-    private URI createURI(String accessToken, String refreshToken) {
+    private URI createURI() {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
-        queryParams.add("access_token", accessToken);
-        queryParams.add("refresh_token", refreshToken);
-
+        queryParams.add("oneTimeUseCode", UUID.randomUUID().toString()); // TODO 일회용 인증코드 나중에 캐시에 저장해야 함
 
         return UriComponentsBuilder
                 .newInstance()
                 .scheme("http")
                 .host("localhost")
-//                .port(80)
-                .path("/receive-token.html")
+                .port(3000)
+                .path("/oauth2/success")
                 .queryParams(queryParams)
                 .build()
                 .toUri();
