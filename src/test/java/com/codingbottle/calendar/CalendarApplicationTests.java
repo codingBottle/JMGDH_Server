@@ -1,9 +1,12 @@
 package com.codingbottle.calendar;
 
-// @SpringBootTest
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
 class CalendarApplicationTests {
 
-	// @Test
+	@Test
 	void contextLoads() {
 	}
 
