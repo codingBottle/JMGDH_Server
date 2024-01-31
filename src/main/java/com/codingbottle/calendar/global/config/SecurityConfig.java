@@ -1,20 +1,20 @@
 package com.codingbottle.calendar.global.config;
 
 import com.codingbottle.calendar.domain.auth.filter.JwtVerificationFilter;
-import com.codingbottle.calendar.domain.auth.handler.*;
+import com.codingbottle.calendar.domain.auth.handler.MemberAccessDeniedHandler;
+import com.codingbottle.calendar.domain.auth.handler.MemberAuthenticationEntryPoint;
+import com.codingbottle.calendar.domain.auth.handler.OAuth2MemberFailureHandler;
+import com.codingbottle.calendar.domain.auth.handler.OAuth2MemberSuccessHandler;
 import com.codingbottle.calendar.domain.auth.jwt.JwtTokenizer;
-import com.codingbottle.calendar.domain.member.service.MemberService;
 import com.codingbottle.calendar.global.utils.CustomAuthorityUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
@@ -27,19 +27,20 @@ import java.util.List;
 public class SecurityConfig {
     private final JwtTokenizer jwtTokenizer;
     private final CustomAuthorityUtils authorityUtils;
-    private final MemberService memberService;
-    private final OAuth2AuthorizedClientService authorizedClientService;
+    private final OAuth2MemberSuccessHandler oAuth2MemberSuccessHandler;
+    private final OAuth2MemberFailureHandler oAuth2MemberFailureHandler;
     @Value("${spring.security.oauth2.client.registration.google.clientId}")
     private String clientId;
     @Value("${spring.security.oauth2.client.registration.google.clientSecret}")
     private String clientSecret;
 
     // @Lazy는 빈 객체끼리 순환 참조를 막기 위해 사용
-    public SecurityConfig(JwtTokenizer jwtTokenizer, CustomAuthorityUtils authorityUtils, @Lazy MemberService memberService, @Lazy OAuth2AuthorizedClientService authorizedClientService) {
+    public SecurityConfig(JwtTokenizer jwtTokenizer, CustomAuthorityUtils authorityUtils
+            , OAuth2MemberSuccessHandler oAuth2MemberSuccessHandler, OAuth2MemberFailureHandler oAuth2MemberFailureHandler) {
         this.jwtTokenizer = jwtTokenizer;
         this.authorityUtils = authorityUtils;
-        this.memberService = memberService;
-        this.authorizedClientService = authorizedClientService;
+        this.oAuth2MemberSuccessHandler = oAuth2MemberSuccessHandler;
+        this.oAuth2MemberFailureHandler = oAuth2MemberFailureHandler;
     }
 
     @Bean
@@ -62,8 +63,9 @@ public class SecurityConfig {
                         .anyRequest().permitAll() // 모든 접근 비허용 후 화이트리스트 기반 인증
                 )
                 .oauth2Login(oauth2 -> oauth2
-                        .successHandler(new OAuth2MemberSuccessHandler(authorizedClientService, memberService, jwtTokenizer))
-                        .failureHandler(new OAuth2MemberFailureHandler()));
+                        .successHandler(oAuth2MemberSuccessHandler)
+                        .failureHandler(oAuth2MemberFailureHandler))
+        ;
         return http.build();
     }
 
