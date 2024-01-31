@@ -1,16 +1,17 @@
 package com.codingbottle.calendar.domain.auth.jwt;
 
+import com.codingbottle.calendar.domain.auth.dto.response.TokenResponse;
+import com.codingbottle.calendar.domain.member.entity.Member;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import lombok.Getter;
+
 import java.security.Key;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class JwtTokenizer {
@@ -26,6 +27,21 @@ public class JwtTokenizer {
     @Value("${jwt.refresh-token-expiration-minutes}")
     private int refreshTokenExpirationMinutes;          // refreshToken 만료 시간
 
+    public TokenResponse generateTokens(Member member) {
+        String accessToken = generateAccessToken(member);
+        String refreshToken = generateRefreshToken(member.getId().toString());
+
+        return TokenResponse.builder()
+                .authScheme("BEARER")
+                .accessToken(accessToken)
+                .accessTokenExp(getTokenExpiration(this.accessTokenExpirationMinutes))
+                .refreshToken(refreshToken)
+                .refreshTokenExp(getTokenExpiration(this.refreshTokenExpirationMinutes))
+                .role(member.getRole().toString())
+                .username(member.getNickname())
+                .build();
+    }
+
     public String generateAccessToken(Map<String, Object> claims,
                                       String audience) {
         Key key = createHmacShaKeyFromSecretKey(this.secretKey);
@@ -38,6 +54,12 @@ public class JwtTokenizer {
                 .setExpiration(expiration)
                 .signWith(key)
                 .compact();
+    }
+
+    public String generateAccessToken(Member member) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("roles", member.getRole());
+        return generateAccessToken(map, member.getId().toString());
     }
 
     public String generateRefreshToken(String audience) {
