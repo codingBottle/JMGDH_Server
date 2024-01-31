@@ -46,7 +46,12 @@ public enum ErrorCode {
 
     // utils/converter
     DATETIME_IS_NULL(401, "DateTime이 NULL값입니다."),
-    DATE_IS_NULL(401, "Date가 NULL값입니다.");
+    DATE_IS_NULL(401, "Date가 NULL값입니다."),
+
+    // Team
+    TEAM_NOT_FOUND(400, "팀이 존재하지 않습니다"),
+    TEAM_UPDATE_DENIED(403, "팀 수정 권한이 없습니다"),
+    NOT_EXISTS_IN_TEAM(404, "해당 팀에 속하지 않습니다");
 
     private final int statusCode;
     private final String message;
