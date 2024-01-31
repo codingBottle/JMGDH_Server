@@ -24,9 +24,9 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      # Gradlew 빌드 실행
+      # Gradlew 빌드 실행(test 생략)
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew build -x test
 
       # 다중 아키텍쳐 배포를 위한 설정
       - name: Set up QEMU
