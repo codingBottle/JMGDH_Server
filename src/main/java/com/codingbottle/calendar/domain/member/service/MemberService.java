@@ -1,14 +1,11 @@
 package com.codingbottle.calendar.domain.member.service;
 
 import com.codingbottle.calendar.domain.member.entity.Member;
-import com.codingbottle.calendar.domain.member.mapper.MemberMapper;
 import com.codingbottle.calendar.domain.member.repository.MemberRepository;
 import com.codingbottle.calendar.global.exception.common.BusinessException;
 import com.codingbottle.calendar.global.exception.common.ErrorCode;
 import com.codingbottle.calendar.global.utils.CustomAuthorityUtils;
-import com.codingbottle.calendar.global.utils.RandomPasswordGenerator;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,31 +16,24 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class MemberService {
     private final MemberRepository memberRepository;
-    private final PasswordEncoder passwordEncoder;
     private final CustomAuthorityUtils customAuthorityUtils;
-    private final MemberMapper memberMapper;
-    private final RandomPasswordGenerator randomPasswordGenerator;
 
-    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, CustomAuthorityUtils customAuthorityUtils, MemberMapper memberMapper, RandomPasswordGenerator randomPasswordGenerator) {
+    public MemberService(MemberRepository memberRepository, CustomAuthorityUtils customAuthorityUtils) {
         this.memberRepository = memberRepository;
-        this.passwordEncoder = passwordEncoder;
         this.customAuthorityUtils = customAuthorityUtils;
-        this.memberMapper = memberMapper;
-        this.randomPasswordGenerator = randomPasswordGenerator;
+
     }
 
     // 회원가입
     @Transactional
-    public Member createMember(String email, String password, String nickname, String accessToken) {
+    public Member createMember(String email, String nickname) {
 
         verifyExistsEmail(email); // 이메일 중복 여부 확인
 
         Member member = Member.builder()
                 .email(email)
-                .password(passwordEncoder.encode(password)) // 비밀번호 암호화
                 .nickname(nickname)
                 .role(customAuthorityUtils.createUserRoles(email))
-                .googleAccessToken(accessToken)
                 .build();
 
         member = memberRepository.save(member);
@@ -52,15 +42,13 @@ public class MemberService {
     }
 
     @Transactional
-    public Member updateMember(Member member, String accessToken) {
+    public Member updateMember(Member member) {
 
         Member updateMember = Member.builder()
                 .id(member.getId())
                 .nickname(member.getNickname())
                 .email(member.getEmail())
-                .password(member.getPassword())
                 .role(member.getRole())
-                .googleAccessToken(accessToken)
                 .build();
 
         memberRepository.save(updateMember);
@@ -104,19 +92,18 @@ public class MemberService {
 
     // 자체 회원가입 된 멤버, 가입이 안된 멤버 컨트롤 하는 로직
     @Transactional
-    public Member oAuth2CheckMember(String email, String nickname, String accessToken) {
+    public Member oAuth2CheckMember(String email, String nickname) {
         Optional<Member> optionalMember = getOptionalMemberByEmail(email);
         Member member;
 
         // 가입이 안되어 있으면 회원가입
         if(optionalMember.isEmpty()) {
-            String password = randomPasswordGenerator.generateRandomPassword();
-            member = createMember(email, password, nickname, accessToken);
+            member = createMember(email, nickname);
         }
         // 가입 되어있으면 로그인
         else {
             member = optionalMember.get();
-            member = updateMember(member, accessToken);
+            member = updateMember(member);
         }
 
         return member;

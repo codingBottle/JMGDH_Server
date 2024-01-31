@@ -19,9 +19,7 @@ public class InitMember implements ApplicationRunner {
         String uuid = UUID.randomUUID().toString().substring(0, 10);
         Member member = Member.builder()
                 .email(uuid)
-                .password(uuid)
                 .nickname(uuid)
-                .googleAccessToken(uuid)
                 .build();
 
         memberRepository.save(member);
