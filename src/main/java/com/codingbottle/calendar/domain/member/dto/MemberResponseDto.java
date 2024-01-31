@@ -1,9 +1,8 @@
 package com.codingbottle.calendar.domain.member.dto;
 
 public record MemberResponseDto(
-        Long memberId,
+        Long id,
         String email,
-        String nickname,
-        String googleAccessToken
+        String nickname
 ) {
 }

@@ -24,22 +24,14 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false, length = 50, unique = true, updatable = false)
     private String email;
 
-    @Column(nullable = false, length = 100)
-    private String password;
-
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> role = new ArrayList<>();
 
-    @Column(nullable = false, length = 500)
-    private String googleAccessToken;
-
     @Builder
-    protected Member(String nickname, String email, String password, Long id, List<String> role, String googleAccessToken) {
+    protected Member(String nickname, String email, Long id, List<String> role) {
         this.id = id;
         this.nickname = nickname;
         this.email = email;
-        this.password = password;
         this.role = role;
-        this.googleAccessToken = googleAccessToken;
     }
 }
