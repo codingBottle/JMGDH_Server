@@ -5,6 +5,7 @@ import com.codingbottle.calendar.global.utils.ErrorResponder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 // OAuth2 로그인 실패했을 때 동작하는 핸들러
+@Component
 @Slf4j
 public class OAuth2MemberFailureHandler extends SimpleUrlAuthenticationFailureHandler {
     @Override

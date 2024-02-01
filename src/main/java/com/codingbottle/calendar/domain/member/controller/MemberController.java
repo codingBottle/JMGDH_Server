@@ -6,20 +6,19 @@ import com.codingbottle.calendar.domain.member.service.MemberService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/members")
 public class MemberController {
     private final MemberService memberService;
     private final MemberMapper memberMapper;
-    private final OAuth2AuthorizedClientService authorizedClientService;
 
-    public MemberController(MemberService memberService, MemberMapper memberMapper, OAuth2AuthorizedClientService authorizedClientService) {
+    public MemberController(MemberService memberService, MemberMapper memberMapper) {
         this.memberService = memberService;
         this.memberMapper = memberMapper;
-        this.authorizedClientService = authorizedClientService;
     }
 
     // 로그인한 Member 정보 반환
