@@ -28,7 +28,7 @@ public class Member extends BaseTimeEntity {
     private List<String> role = new ArrayList<>();
 
     @Builder
-    protected Member(String nickname, String email, Long id, List<String> role) {
+    public Member(Long id, String nickname, String email, List<String> role) {
         this.id = id;
         this.nickname = nickname;
         this.email = email;

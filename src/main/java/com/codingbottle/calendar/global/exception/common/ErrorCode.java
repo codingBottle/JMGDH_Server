@@ -46,7 +46,16 @@ public enum ErrorCode {
 
     // utils/converter
     DATETIME_IS_NULL(401, "DateTime이 NULL값입니다."),
-    DATE_IS_NULL(401, "Date가 NULL값입니다.");
+    DATE_IS_NULL(401, "Date가 NULL값입니다."),
+
+    // Team
+    TEAM_NOT_FOUND(404, "팀이 존재하지 않습니다."),
+    TEAM_UPDATE_DENIED(403, "팀 수정 권한이 없습니다."),
+    LEADER_CANNOT_LEAVE_TEAM(400, "팀장은 팀을 나갈 수 없습니다."),
+    INVALID_INVITE_CODE(404, "유효하지 않은 초대코드입니다."),
+    ALREADY_IN_TEAM(400, "이미 가입된 팀입니다."),
+    TEAM_CODE_EXPIRED(401, "초대코드 유효기간이 지났습니다. 다시 생성해주세요."),
+    NOT_EXISTS_IN_TEAM(404, "해당 팀에 속하지 않습니다.");
 
     private final int statusCode;
     private final String message;
