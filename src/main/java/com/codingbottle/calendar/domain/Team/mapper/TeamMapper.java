@@ -5,7 +5,6 @@ import com.codingbottle.calendar.domain.Team.entity.Team;
 import com.codingbottle.calendar.domain.Team.entity.TeamMemberList;
 import com.codingbottle.calendar.domain.member.dto.MemberResponseDto;
 import com.codingbottle.calendar.domain.member.mapper.MemberMapper;
-import com.codingbottle.calendar.domain.member.service.MemberService;
 import org.mapstruct.Mapper;
 
 import java.util.ArrayList;

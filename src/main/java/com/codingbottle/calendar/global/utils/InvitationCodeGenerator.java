@@ -7,7 +7,7 @@ import java.security.SecureRandom;
 @Component
 public class InvitationCodeGenerator {
     // 랜덤 초대 코드 생성
-    public String generateInvitationCode() {
+    public static String generateInvitationCode() {
         int codeLength = 8; // 초대 코드 길이
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         StringBuilder code = new StringBuilder();

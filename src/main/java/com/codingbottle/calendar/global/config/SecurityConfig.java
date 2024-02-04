@@ -60,7 +60,7 @@ public class SecurityConfig {
                 .apply(new CustomFilterConfigurer())
                 .and()
                 .authorizeHttpRequests(authorize -> authorize
-                        .anyRequest().permitAll() // 모든 접근 비허용 후 화이트리스트 기반 인증
+                        .anyRequest().permitAll() // 모든 접근 허용
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .successHandler(oAuth2MemberSuccessHandler)

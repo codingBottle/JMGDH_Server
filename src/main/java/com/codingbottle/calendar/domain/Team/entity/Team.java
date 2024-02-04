@@ -22,8 +22,7 @@ public class Team {
     @Column(nullable = false)
     private String name;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "teamCode_id", nullable = false)
+    @OneToOne(mappedBy = "team", cascade = CascadeType.ALL, optional = false)
     private TeamCode teamCode;
 
     @ManyToOne
@@ -48,5 +47,7 @@ public class Team {
     public void updateForm(TeamUpdateReqDto teamUpdateReqDto) {
         this.name = teamUpdateReqDto.name();
     }
+    public void addTeamMemberLists(TeamMemberList teamMemberList) { this.teamMemberLists.add(teamMemberList); }
+    public void setTeamCode(TeamCode teamCode) { this.teamCode = teamCode; }
 
 }
