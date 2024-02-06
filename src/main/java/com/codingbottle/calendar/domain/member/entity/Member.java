@@ -42,4 +42,12 @@ public class Member extends BaseTimeEntity {
         this.role = role;
         this.googleAccessToken = googleAccessToken;
     }
+
+    public static Member createMember(long id) {
+        return Member.builder().build();
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 }
