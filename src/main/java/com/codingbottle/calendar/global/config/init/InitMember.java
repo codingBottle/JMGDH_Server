@@ -19,6 +19,7 @@ public class InitMember implements ApplicationRunner {
         String uuid = UUID.randomUUID().toString().substring(0, 10);
         Member member = Member.builder()
                 .email(uuid)
+                .imageUrl(uuid)
                 .nickname(uuid)
                 .build();
 

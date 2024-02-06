@@ -24,14 +24,18 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false, length = 50, unique = true, updatable = false)
     private String email;
 
+    @Column(nullable = false)
+    private String imageUrl;
+
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> role = new ArrayList<>();
 
     @Builder
-    public Member(Long id, String nickname, String email, List<String> role) {
+    public Member(Long id, String nickname, String email, String imageUrl, List<String> role) {
         this.id = id;
         this.nickname = nickname;
         this.email = email;
+        this.imageUrl = imageUrl;
         this.role = role;
     }
 }

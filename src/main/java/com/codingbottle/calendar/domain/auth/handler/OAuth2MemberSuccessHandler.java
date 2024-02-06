@@ -34,8 +34,9 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
         var oAuth2User = (OAuth2User) authentication.getPrincipal(); // 로그인 된 구글 계정 사용자 정보를 받아온다
         String email = String.valueOf(oAuth2User.getAttributes().get("email")); // 로그인 된 구글 계정 사용자의 이메일을 받아온다.
         String nickname = String.valueOf(oAuth2User.getAttributes().get("name")); // 닉네임 불러오기
+        String imageUrl = (String) oAuth2User.getAttributes().get("picture"); // 프로필 사진 불러오기
 
-        Member member = memberService.oAuth2CheckMember(email, nickname);// 가입 되어 있으면 로그인, 없으면 회원가입
+        Member member = memberService.oAuth2CheckMember(email, nickname, imageUrl);// 가입 되어 있으면 로그인, 없으면 회원가입
         redirect(request, response, member);
     }
 
