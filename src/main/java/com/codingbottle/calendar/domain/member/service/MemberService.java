@@ -26,13 +26,14 @@ public class MemberService {
 
     // 회원가입
     @Transactional
-    public Member createMember(String email, String nickname) {
+    public Member createMember(String email, String nickname, String imageUrl) {
 
         verifyExistsEmail(email); // 이메일 중복 여부 확인
 
         Member member = Member.builder()
                 .email(email)
                 .nickname(nickname)
+                .imageUrl(imageUrl)
                 .role(customAuthorityUtils.createUserRoles(email))
                 .build();
 
@@ -42,11 +43,12 @@ public class MemberService {
     }
 
     @Transactional
-    public Member updateMember(Member member) {
+    public Member updateMember(Member member, String nickname, String imageUrl) {
 
         Member updateMember = Member.builder()
                 .id(member.getId())
-                .nickname(member.getNickname())
+                .nickname(nickname)
+                .imageUrl(imageUrl)
                 .email(member.getEmail())
                 .role(member.getRole())
                 .build();
@@ -92,20 +94,30 @@ public class MemberService {
 
     // 자체 회원가입 된 멤버, 가입이 안된 멤버 컨트롤 하는 로직
     @Transactional
-    public Member oAuth2CheckMember(String email, String nickname) {
+    public Member oAuth2CheckMember(String email, String nickname, String imageUrl) {
         Optional<Member> optionalMember = getOptionalMemberByEmail(email);
         Member member;
 
         // 가입이 안되어 있으면 회원가입
         if(optionalMember.isEmpty()) {
-            member = createMember(email, nickname);
+            member = createMember(email, nickname, imageUrl);
         }
         // 가입 되어있으면 로그인
         else {
             member = optionalMember.get();
-            member = updateMember(member);
+
+            if(!checkMember(member, nickname, imageUrl))
+                member = updateMember(member, nickname, imageUrl);
+
         }
 
         return member;
+    }
+
+    private Boolean checkMember(Member member, String nickname, String imageUrl) {
+        if(member.getNickname() != nickname || member.getImageUrl() != imageUrl)
+            return false;
+        else
+            return true;
     }
 }
