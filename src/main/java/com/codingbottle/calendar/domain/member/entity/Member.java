@@ -38,4 +38,12 @@ public class Member extends BaseTimeEntity {
         this.imageUrl = imageUrl;
         this.role = role;
     }
+
+    public static Member createMember(long id) {
+        return Member.builder().build();
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 }
