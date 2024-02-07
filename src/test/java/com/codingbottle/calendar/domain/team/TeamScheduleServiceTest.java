@@ -1,9 +1,9 @@
 package com.codingbottle.calendar.domain.team;
 
-import com.codingbottle.calendar.domain.Team.dto.TeamScheduleListReqDto;
-import com.codingbottle.calendar.domain.Team.dto.TeamScheduleRspDto;
-import com.codingbottle.calendar.domain.Team.mapper.TeamScheduleMapper;
-import com.codingbottle.calendar.domain.Team.service.TeamService;
+import com.codingbottle.calendar.domain.team.dto.TeamScheduleListReqDto;
+import com.codingbottle.calendar.domain.team.dto.TeamScheduleRspDto;
+import com.codingbottle.calendar.domain.team.mapper.TeamScheduleMapper;
+import com.codingbottle.calendar.domain.team.service.TeamService;
 import com.codingbottle.calendar.domain.member.entity.Member;
 import com.codingbottle.calendar.domain.schedule.entity.Schedule;
 import com.codingbottle.calendar.domain.schedule.service.ScheduleService;

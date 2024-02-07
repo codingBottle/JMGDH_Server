@@ -1,6 +1,6 @@
-package com.codingbottle.calendar.domain.Team.mapper;
+package com.codingbottle.calendar.domain.team.mapper;
 
-import com.codingbottle.calendar.domain.Team.dto.TeamScheduleRspDto;
+import com.codingbottle.calendar.domain.team.dto.TeamScheduleRspDto;
 import com.codingbottle.calendar.domain.schedule.entity.Schedule;
 import org.mapstruct.Mapper;
 

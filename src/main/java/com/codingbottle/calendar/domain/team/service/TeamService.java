@@ -1,15 +1,15 @@
-package com.codingbottle.calendar.domain.Team.service;
+package com.codingbottle.calendar.domain.team.service;
 
-import com.codingbottle.calendar.domain.Team.dto.*;
-import com.codingbottle.calendar.domain.Team.entity.Team;
-import com.codingbottle.calendar.domain.Team.entity.TeamCode;
-import com.codingbottle.calendar.domain.Team.entity.TeamMemberList;
-import com.codingbottle.calendar.domain.Team.mapper.TeamCodeMapper;
-import com.codingbottle.calendar.domain.Team.mapper.TeamMapper;
-import com.codingbottle.calendar.domain.Team.mapper.TeamScheduleMapper;
-import com.codingbottle.calendar.domain.Team.repository.TeamCodeRepository;
-import com.codingbottle.calendar.domain.Team.repository.TeamMemberListRepository;
-import com.codingbottle.calendar.domain.Team.repository.TeamRepository;
+import com.codingbottle.calendar.domain.team.dto.*;
+import com.codingbottle.calendar.domain.team.entity.Team;
+import com.codingbottle.calendar.domain.team.entity.TeamCode;
+import com.codingbottle.calendar.domain.team.entity.TeamMemberList;
+import com.codingbottle.calendar.domain.team.mapper.TeamCodeMapper;
+import com.codingbottle.calendar.domain.team.mapper.TeamMapper;
+import com.codingbottle.calendar.domain.team.mapper.TeamScheduleMapper;
+import com.codingbottle.calendar.domain.team.repository.TeamCodeRepository;
+import com.codingbottle.calendar.domain.team.repository.TeamMemberListRepository;
+import com.codingbottle.calendar.domain.team.repository.TeamRepository;
 import com.codingbottle.calendar.domain.member.dto.MemberResponseDto;
 import com.codingbottle.calendar.domain.member.entity.Member;
 import com.codingbottle.calendar.domain.member.mapper.MemberMapper;

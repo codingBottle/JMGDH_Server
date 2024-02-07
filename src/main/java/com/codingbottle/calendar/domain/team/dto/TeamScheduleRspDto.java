@@ -1,4 +1,4 @@
-package com.codingbottle.calendar.domain.Team.dto;
+package com.codingbottle.calendar.domain.team.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

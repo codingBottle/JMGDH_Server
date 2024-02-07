@@ -1,4 +1,4 @@
-package com.codingbottle.calendar.domain.Team.dto;
+package com.codingbottle.calendar.domain.team.dto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

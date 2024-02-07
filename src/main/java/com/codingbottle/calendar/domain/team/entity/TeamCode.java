@@ -1,4 +1,4 @@
-package com.codingbottle.calendar.domain.Team.entity;
+package com.codingbottle.calendar.domain.team.entity;
 
 import com.codingbottle.calendar.global.utils.InvitationCodeGenerator;
 import lombok.AccessLevel;

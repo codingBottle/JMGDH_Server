@@ -1,6 +1,6 @@
-package com.codingbottle.calendar.domain.Team.entity;
+package com.codingbottle.calendar.domain.team.entity;
 
-import com.codingbottle.calendar.domain.Team.dto.TeamUpdateReqDto;
+import com.codingbottle.calendar.domain.team.dto.TeamUpdateReqDto;
 import com.codingbottle.calendar.domain.member.entity.Member;
 import lombok.AccessLevel;
 import lombok.Builder;

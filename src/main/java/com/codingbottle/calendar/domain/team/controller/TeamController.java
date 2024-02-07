@@ -1,7 +1,7 @@
-package com.codingbottle.calendar.domain.Team.controller;
+package com.codingbottle.calendar.domain.team.controller;
 
-import com.codingbottle.calendar.domain.Team.dto.*;
-import com.codingbottle.calendar.domain.Team.service.TeamService;
+import com.codingbottle.calendar.domain.team.dto.*;
+import com.codingbottle.calendar.domain.team.service.TeamService;
 import com.codingbottle.calendar.domain.member.dto.MemberResponseDto;
 import com.codingbottle.calendar.global.api.RspTemplate;
 import lombok.extern.slf4j.Slf4j;

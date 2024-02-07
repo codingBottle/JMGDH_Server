@@ -1,7 +1,7 @@
-package com.codingbottle.calendar.domain.Team.mapper;
+package com.codingbottle.calendar.domain.team.mapper;
 
-import com.codingbottle.calendar.domain.Team.dto.TeamCodeRspDto;
-import com.codingbottle.calendar.domain.Team.entity.TeamCode;
+import com.codingbottle.calendar.domain.team.dto.TeamCodeRspDto;
+import com.codingbottle.calendar.domain.team.entity.TeamCode;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
