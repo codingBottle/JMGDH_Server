@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -38,5 +39,15 @@ public class TodoTag extends BaseTimeEntity {
     public void update(String name, TagColor color) {
         this.tagName = name;
         this.color = color;
+    }
+
+    public static List<TodoTag> generateInitialTags(Member member) {
+        return List.of(
+                TodoTag.builder().tagName("문화생활").color(TagColor.BLUSH_PINK).member(member).build(),
+                TodoTag.builder().tagName("학교").color(TagColor.CREAMY_PEACH).member(member).build(),
+                TodoTag.builder().tagName("친구").color(TagColor.VANILLA_CREAM).member(member).build(),
+                TodoTag.builder().tagName("알바").color(TagColor.MINT_GREEN).member(member).build(),
+                TodoTag.builder().tagName("동아리").color(TagColor.LIGHT_KHAKI).member(member).build()
+        );
     }
 }
