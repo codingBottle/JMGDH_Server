@@ -1,22 +1,30 @@
 package com.codingbottle.calendar.domain.todo.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum TagColor {
-    COLOR1("#FCE3E3"),
-    COLOR2("#FCEFDA"),
-    COLOR3("#FCFAD7"),
-    COLOR4("#D8F1E2"),
-    COLOR5("#E6F8D0"),
-    COLOR6("#EEE8F8");
+    BLUSH_PINK("#FCE3E3"),
+    CREAMY_PEACH("#FCEFDA"),
+    VANILLA_CREAM("#FCFAD7"),
+    MINT_GREEN("#D8F1E2"),
+    LIGHT_KHAKI("#E6F8D0"),
+    BABY_PINK("#DBF0F5"),
+    AQUA_GREEN("#D4F5F3"),
+    LAVENDER_BLUSH("#E4EBF8"),
+    SALMON_PINK("#FBE8F1"),
+    LAVENDER_GRAY("#EEE8F8")
+    ;
 
-    private final String color;
+    @JsonValue
+    private final String colorCode;
 
-    TagColor(String color) {
-        this.color = color;
+    TagColor(String colorCode) {
+        this.colorCode = colorCode;
     }
 
-    public String getColor() {
-        return color;
+    public String getColorCode() {
+        return colorCode;
     }
 }
 
