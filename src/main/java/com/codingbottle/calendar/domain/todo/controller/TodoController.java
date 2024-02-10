@@ -38,7 +38,7 @@ public class TodoController {
     @PatchMapping("/todos/{todoId}/title")
     public ResponseEntity<RspTemplate<Void>> handleUpdate(
             @PathVariable Long todoId,
-            @RequestBody @Valid TodoUpdateRspDto reqDto,
+            @RequestBody @Valid TodoUpdateReqDto reqDto,
             Authentication authentication
     ) {
         todoService.update(todoId, reqDto, Long.parseLong(authentication.getName()));

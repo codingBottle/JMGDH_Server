@@ -30,17 +30,17 @@ public class Todo {
     private LocalDate date;
 
     @ManyToOne
-    @JoinColumn(name = "tag_id", nullable = false)
+    @JoinColumn(name = "todo_tag_id", nullable = false)
     private TodoTag todoTag;
 
     @Builder
-    public Todo(Long id, Member member, String title, boolean isChecked, LocalDate date, TodoTag todoTag) {
+    private Todo(Long id, Member member, String title, LocalDate date, TodoTag todoTag) {
         this.id = id;
         this.member = member;
         this.title = title;
-        this.isChecked = isChecked;
         this.date = date;
         this.todoTag = todoTag;
+        this.isChecked = false;
     }
 
     public void setTitle(String newTitle) {
@@ -55,18 +55,9 @@ public class Todo {
         this.isChecked = newCheck;
     }
 
-    private void setDate(LocalDate date) {
-        this.date = date;
-    }
 
-    public void updateFrom(Todo updatedTodo) {
-        if (updatedTodo.getTitle() != null) {
-            this.setTitle(updatedTodo.getTitle());
-        }
-        if (updatedTodo.getDate() != null) {
-            this.setDate(updatedTodo.getDate());
-        }
-        this.setCheck(updatedTodo.isChecked());
+    public void updateTitle(String titleToUpdate) {
+        this.title = titleToUpdate;
     }
 
 

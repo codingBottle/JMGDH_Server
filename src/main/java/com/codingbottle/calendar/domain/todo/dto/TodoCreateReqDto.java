@@ -14,10 +14,6 @@ public record TodoCreateReqDto(
         @JsonFormat(pattern = "yyyy-MM-dd", shape = Shape.STRING)
         @NotNull
         LocalDate date,
-        @NotNull
-        String tagName,
-        @NotNull
-        String color,
-        boolean isChecked
+        long tagId
 ) {
 }

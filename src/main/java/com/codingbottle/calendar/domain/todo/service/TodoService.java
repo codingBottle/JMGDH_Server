@@ -3,8 +3,7 @@ package com.codingbottle.calendar.domain.todo.service;
 import com.codingbottle.calendar.domain.member.entity.Member;
 import com.codingbottle.calendar.domain.member.repository.MemberRepository;
 import com.codingbottle.calendar.domain.todo.dto.TodoCreateReqDto;
-import com.codingbottle.calendar.domain.todo.dto.TodoUpdateRspDto;
-import com.codingbottle.calendar.domain.todo.entity.TagColor;
+import com.codingbottle.calendar.domain.todo.dto.TodoUpdateReqDto;
 import com.codingbottle.calendar.domain.todo.entity.Todo;
 import com.codingbottle.calendar.domain.todo.entity.TodoTag;
 import com.codingbottle.calendar.domain.todo.repository.TodoRepository;
@@ -30,19 +29,13 @@ public class TodoService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("ID가 " + memberId + "인 회원을 찾을 수 없습니다."));
 
-        // Find or create the tag
-        TodoTag todoTag = todoTagRepository.findByTagName(reqDto.tagName())
-                .orElse(TodoTag.builder()
-                        .tagName(reqDto.tagName())
-                        .color(TagColor.valueOf(reqDto.color()))
-                        .member(member)
-                        .build());
+        TodoTag todoTag = todoTagRepository.findById(reqDto.tagId())
+                .orElseThrow(() -> new IllegalArgumentException("ID가 " + reqDto.tagId() + "인 태그를 찾을 수 없습니다."));
 
         Todo todo = Todo.builder()
                 .title(reqDto.title())
                 .date(reqDto.date())
                 .member(member)
-                .isChecked(reqDto.isChecked())
                 .todoTag(todoTag)
                 .build();
 
@@ -51,23 +44,15 @@ public class TodoService {
 
     // 내용 수정
     @Transactional
-    public void update(long todoId, TodoUpdateRspDto reqDto, long memberId) {
+    public void update(long todoId, TodoUpdateReqDto reqDto, long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("ID가 " + memberId + "인 회원을 찾을 수 없습니다."));
 
         Todo todo = todoRepository.findById(todoId)
                 .orElseThrow(() -> new IllegalArgumentException("ID가 " + todoId + "인 Todo를 찾을 수 없습니다."));
-
         validateTodoOwnership(todo, member);
 
-        todo.updateFrom(Todo.builder()
-                .title(reqDto.title())
-                .date(reqDto.date())
-                .isChecked(reqDto.isChecked())
-                .build());
-        todo.setTitle(reqDto.title());
-
-        todoRepository.save(todo);
+        todo.updateTitle(reqDto.title());
     }
     // 본인 확인
     private void validateTodoOwnership(Todo todo, Member member) {
@@ -82,7 +67,8 @@ public class TodoService {
         Todo todo = findTodoByIdAndMember(todoId, memberId);
         todo.setCheck(newCheck);
     }
-    // todo 확인
+
+    // todo를 확인
     private Todo findTodoByIdAndMember(Long todoId, Long memberId) {
         return (Todo) todoRepository.findByIdAndMemberId(todoId, memberId)
                 .orElseThrow(() -> new IllegalArgumentException("ID가 " + todoId + "인 Todo를 찾을 수 없습니다."));
@@ -98,7 +84,6 @@ public class TodoService {
                 .orElseThrow(() -> new NoSuchElementException("ID가 " + memberId + "인 회원을 찾을 수 없습니다."));
 
         validateTodoOwnership(todo, member);
-
         todoRepository.delete(todo);
     }
 
