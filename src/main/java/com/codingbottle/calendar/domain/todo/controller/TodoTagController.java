@@ -1,7 +1,6 @@
 package com.codingbottle.calendar.domain.todo.controller;
 
 import com.codingbottle.calendar.domain.todo.dto.TagCreateReqDto;
-import com.codingbottle.calendar.domain.todo.dto.TagUpdateReqDto;
 import com.codingbottle.calendar.domain.todo.entity.TodoTag;
 import com.codingbottle.calendar.domain.todo.service.TodoTagService;
 import com.codingbottle.calendar.global.api.RspTemplate;
@@ -11,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -22,7 +22,10 @@ public class TodoTagController {
 
     // 태그 추가
     @PostMapping("/tags")
-    public ResponseEntity<RspTemplate<Void>> createTag(@RequestBody TagCreateReqDto reqDto, Authentication authentication) {
+    public ResponseEntity<RspTemplate<Void>> createTag(
+            @RequestBody @Valid TagCreateReqDto reqDto
+            , Authentication authentication
+    ) {
         tagService.createTag(reqDto, Long.parseLong(authentication.getName()));
         RspTemplate<Void> rspTemplate = new RspTemplate<>(HttpStatus.CREATED, "새로운 태그 생성");
         return ResponseEntity.status(HttpStatus.CREATED).body(rspTemplate);
@@ -32,7 +35,7 @@ public class TodoTagController {
     @PatchMapping("/tags/{tagId}")
     public ResponseEntity<RspTemplate<Void>> handleUpdateTag(
             @PathVariable Long tagId,
-            @RequestBody TagCreateReqDto reqDto
+            @RequestBody @Valid TagCreateReqDto reqDto
     ) {
         tagService.updateTag(tagId, reqDto);
 

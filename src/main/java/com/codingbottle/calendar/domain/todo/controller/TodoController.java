@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class TodoController {
     // 투두 등록
     @PostMapping("/todos")
     public ResponseEntity<RspTemplate<Void>> handleCreate(
-            @RequestBody TodoCreateReqDto reqDto,
+            @RequestBody @Valid TodoCreateReqDto reqDto,
             Authentication authentication
     ) {
         todoService.create(reqDto, Long.parseLong(authentication.getName()));
@@ -37,7 +38,7 @@ public class TodoController {
     @PatchMapping("/todos/{todoId}/title")
     public ResponseEntity<RspTemplate<Void>> handleUpdate(
             @PathVariable Long todoId,
-            @RequestBody TodoUpdateRspDto reqDto,
+            @RequestBody @Valid TodoUpdateRspDto reqDto,
             Authentication authentication
     ) {
         todoService.update(todoId, reqDto, Long.parseLong(authentication.getName()));
