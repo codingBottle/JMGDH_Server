@@ -43,18 +43,13 @@ public class Todo {
         this.isChecked = false;
     }
 
-    public void setTitle(String newTitle) {
-        this.title = newTitle;
-    }
-
     public Member getId() {
         return member;
     }
 
-    public void setCheck(boolean newCheck) {
-        this.isChecked = newCheck;
+    public void toggleCheckStatus() {
+        this.isChecked = !isChecked;
     }
-
 
     public void updateTitle(String titleToUpdate) {
         this.title = titleToUpdate;

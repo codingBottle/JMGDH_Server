@@ -63,9 +63,9 @@ public class TodoService {
 
     // 체크 여부 수정
     @Transactional
-    public void updateCheck(Long todoId, boolean newCheck, Long memberId) {
+    public void updateCheck(Long todoId, Long memberId) {
         Todo todo = findTodoByIdAndMember(todoId, memberId);
-        todo.setCheck(newCheck);
+        todo.toggleCheckStatus();
     }
 
     // todo를 확인

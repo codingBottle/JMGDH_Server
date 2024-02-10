@@ -52,11 +52,10 @@ public class TodoController {
     @PatchMapping("/todos/{todoId}/check")
     public ResponseEntity<RspTemplate<Void>> handleUpdateCheckStatus(
             @PathVariable Long todoId,
-            @RequestParam boolean newCheck,
             Authentication authentication
     ) {
         long memberId = Long.parseLong(authentication.getName());
-        todoService.updateCheck(todoId, newCheck, memberId);
+        todoService.updateCheck(todoId, memberId);
 
         RspTemplate<Void> rspTemplate = new RspTemplate<>(HttpStatus.OK,
                 "할 일 체크 여부 수정 완료");
