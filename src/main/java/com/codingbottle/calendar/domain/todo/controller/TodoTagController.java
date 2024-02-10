@@ -1,6 +1,7 @@
 package com.codingbottle.calendar.domain.todo.controller;
 
 import com.codingbottle.calendar.domain.todo.dto.TagCreateReqDto;
+import com.codingbottle.calendar.domain.todo.dto.TodoTagListResponse;
 import com.codingbottle.calendar.domain.todo.entity.TodoTag;
 import com.codingbottle.calendar.domain.todo.service.TodoTagService;
 import com.codingbottle.calendar.global.api.RspTemplate;
@@ -54,10 +55,11 @@ public class TodoTagController {
 
     // 회원 ID로 모든 태그 조회
     @GetMapping("/tags")
-    public ResponseEntity<List<TodoTag>> handleGetAllTags(Authentication authentication) {
+    public ResponseEntity<TodoTagListResponse> handleGetAllTags(Authentication authentication) {
         long memberId = Long.parseLong(authentication.getName());
         List<TodoTag> tags = todoTagService.getAllTagsByMemberId(memberId);
+        TodoTagListResponse response = TodoTagListResponse.from(tags);
 
-        return ResponseEntity.status(HttpStatus.OK).body(tags);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
