@@ -32,7 +32,7 @@ public class TodoTagController {
     @PatchMapping("/tags/{tagId}")
     public ResponseEntity<RspTemplate<Void>> handleUpdateTag(
             @PathVariable Long tagId,
-            @RequestBody TagUpdateReqDto reqDto
+            @RequestBody TagCreateReqDto reqDto
     ) {
         tagService.updateTag(tagId, reqDto);
 

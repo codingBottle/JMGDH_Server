@@ -35,12 +35,8 @@ public class TodoTag extends BaseTimeEntity {
         this.member = member;
     }
 
-    public void setTagName(String tagName) {
-        this.tagName = tagName;
-    }
-
-    public void setColor(TagColor color) {
+    public void update(String name, TagColor color) {
+        this.tagName = name;
         this.color = color;
     }
-
 }

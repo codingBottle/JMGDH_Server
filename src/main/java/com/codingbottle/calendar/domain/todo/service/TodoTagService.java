@@ -2,7 +2,6 @@ package com.codingbottle.calendar.domain.todo.service;
 
 import com.codingbottle.calendar.domain.member.entity.Member;
 import com.codingbottle.calendar.domain.todo.dto.TagCreateReqDto;
-import com.codingbottle.calendar.domain.todo.dto.TagUpdateReqDto;
 import com.codingbottle.calendar.domain.todo.entity.TodoTag;
 import com.codingbottle.calendar.domain.todo.repository.TodoTagRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,18 +33,11 @@ public class TodoTagService {
 
     // 태그 속성 수정
     @Transactional
-    public void updateTag(Long tagId, TagUpdateReqDto reqDto) {
+    public void updateTag(Long tagId, TagCreateReqDto reqDto) {
         TodoTag todoTag = todoTagRepository.findById(tagId)
                 .orElseThrow(() -> new IllegalArgumentException("Tag not found with id: " + tagId));
 
-        if (reqDto.getTagName() != null) {
-            todoTag.setTagName(reqDto.getTagName());
-        }
-
-        if (reqDto.getColor() != null) {
-            todoTag.setColor(reqDto.getColor());
-        }
-
+        todoTag.update(reqDto.tagName(), reqDto.color());
         todoTagRepository.save(todoTag);
     }
 
