@@ -71,7 +71,7 @@ public class TodoService {
     }
     // 본인 확인
     private void validateTodoOwnership(Todo todo, Member member) {
-        if (!todo.getMember().equals(member)) {
+        if (!todo.getMember().getId().equals(member.getId())) {
             throw new IllegalArgumentException("ID가"+ todo.getId() + "인 할 일은 현재 로그인한 회원에게 속하지 않습니다.");
         }
     }
