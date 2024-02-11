@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface TodoRepository extends JpaRepository<Todo, Long> {
 
     // todoId와 memberId를 기반으로 특정 투두 찾기
-    Optional<Object> findByIdAndMemberId(Long todoId, Long memberId);
+    Optional<Todo> findByIdAndMemberId(Long todoId, Long memberId);
 
     //멤버id로 모든 투두 조회
     List<Todo> findAllByMemberId(long memberId);

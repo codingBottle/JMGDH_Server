@@ -16,15 +16,18 @@ import java.util.List;
 public class TodoTagService {
 
     private final TodoTagRepository todoTagRepository;
+    private final MemberRepository memberRepository;
+    private final TodoRepository todoRepository;
 
     // 새로운 태그 등록
     @Transactional
     public void createTag(TagCreateReqDto reqDto, long memberId) {
-        Member member = Member.createMember(memberId);
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("ID에 해당하는 회원을 찾을 수 없습니다: " + memberId));
 
         TodoTag todoTag = TodoTag.builder()
                 .tagName(reqDto.tagName())
-                .color(reqDto.color())
+                .color(reqDto.tagColor())
                 .member(member)
                 .build();
 
@@ -37,8 +40,7 @@ public class TodoTagService {
         TodoTag todoTag = todoTagRepository.findById(tagId)
                 .orElseThrow(() -> new IllegalArgumentException("Tag not found with id: " + tagId));
 
-        todoTag.update(reqDto.tagName(), reqDto.color());
-        todoTagRepository.save(todoTag);
+        todoTag.update(reqDto.tagName(), reqDto.tagColor());
     }
 
     // 태그 속성 삭제
