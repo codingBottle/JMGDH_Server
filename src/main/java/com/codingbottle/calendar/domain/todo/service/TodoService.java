@@ -3,6 +3,8 @@ package com.codingbottle.calendar.domain.todo.service;
 import com.codingbottle.calendar.domain.member.entity.Member;
 import com.codingbottle.calendar.domain.member.repository.MemberRepository;
 import com.codingbottle.calendar.domain.todo.dto.TodoCreateReqDto;
+import com.codingbottle.calendar.domain.todo.dto.TodoListResponse;
+import com.codingbottle.calendar.domain.todo.dto.TodoResponseWithTagId;
 import com.codingbottle.calendar.domain.todo.dto.TodoUpdateReqDto;
 import com.codingbottle.calendar.domain.todo.entity.Todo;
 import com.codingbottle.calendar.domain.todo.entity.TodoTag;
@@ -12,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -54,24 +57,12 @@ public class TodoService {
 
         todo.updateTitle(reqDto.title());
     }
-    // 본인 확인
-    private void validateTodoOwnership(Todo todo, Member member) {
-        if (!todo.getMember().getId().equals(member.getId())) {
-            throw new IllegalArgumentException("ID가"+ todo.getId() + "인 할 일은 현재 로그인한 회원에게 속하지 않습니다.");
-        }
-    }
 
     // 체크 여부 수정
     @Transactional
     public void updateCheck(Long todoId, Long memberId) {
         Todo todo = findTodoByIdAndMember(todoId, memberId);
         todo.toggleCheckStatus();
-    }
-
-    // todo를 확인
-    private Todo findTodoByIdAndMember(Long todoId, Long memberId) {
-        return (Todo) todoRepository.findByIdAndMemberId(todoId, memberId)
-                .orElseThrow(() -> new IllegalArgumentException("ID가 " + todoId + "인 Todo를 찾을 수 없습니다."));
     }
 
     // 내용 삭제
@@ -88,8 +79,28 @@ public class TodoService {
     }
 
     // 모든 투두 조회
-    public List<Todo> getAllTodosByMemberId(long memberId) {
-        return todoRepository.findAllByMemberId(memberId);
+    public TodoListResponse findAll(long memberId, LocalDate date) {
+        // 태그 조회
+        List<TodoTag> todoTags = todoTagRepository.findAllByMemberId(memberId);
+        List<Long> todoTagIds = todoTags.stream()
+                .map(TodoTag::getId)
+                .toList();
+        // 태그와 날짜에 해당하는 Todo목록 조회
+        List<TodoResponseWithTagId> todos = todoRepository.findAllByTagAndDate(todoTagIds, date);
+
+        return TodoListResponse.from(todoTags, todos);
     }
 
+    // 본인 확인
+    private void validateTodoOwnership(Todo todo, Member member) {
+        if (!todo.getMember().getId().equals(member.getId())) {
+            throw new IllegalArgumentException("ID가"+ todo.getId() + "인 할 일은 현재 로그인한 회원에게 속하지 않습니다.");
+        }
+    }
+
+    // todo를 확인
+    private Todo findTodoByIdAndMember(Long todoId, Long memberId) {
+        return todoRepository.findByIdAndMemberId(todoId, memberId)
+                .orElseThrow(() -> new IllegalArgumentException("ID가 " + todoId + "인 Todo를 찾을 수 없습니다."));
+    }
 }

@@ -1,16 +1,19 @@
 package com.codingbottle.calendar.domain.todo.controller;
 
 import com.codingbottle.calendar.domain.todo.dto.TodoCreateReqDto;
+import com.codingbottle.calendar.domain.todo.dto.TodoListResponse;
 import com.codingbottle.calendar.domain.todo.dto.TodoUpdateReqDto;
 import com.codingbottle.calendar.domain.todo.service.TodoService;
 import com.codingbottle.calendar.global.api.RspTemplate;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 @RequiredArgsConstructor
@@ -73,6 +76,16 @@ public class TodoController {
                 "할 일이 삭제되었습니다");
         return ResponseEntity.status(HttpStatus.OK).body(rspTemplate);
     }
+
+    @GetMapping("/todos/date/{date}")
+    public ResponseEntity<TodoListResponse> handleGetTodos(
+            Authentication authentication
+            , @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date
+    ) {
+        TodoListResponse response = todoService.findAll(Long.parseLong(authentication.getName()), date);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
 
 }
 

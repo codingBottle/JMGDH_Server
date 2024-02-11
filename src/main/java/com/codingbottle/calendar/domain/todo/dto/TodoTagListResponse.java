@@ -27,7 +27,7 @@ public class TodoTagListResponse {
 
     @Builder
     @Getter
-    static class TodoTagDto {
+    private static class TodoTagDto {
         long id;
         String tagName;
         TagColor color;
