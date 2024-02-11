@@ -22,7 +22,7 @@ public class TodoTagController {
     private final TodoTagService tagService;
 
     // 태그 추가
-    @PostMapping("/tags")
+    @PostMapping("/todo-tags")
     public ResponseEntity<RspTemplate<Void>> createTag(
             @RequestBody @Valid TagCreateReqDto reqDto
             , Authentication authentication
@@ -33,7 +33,7 @@ public class TodoTagController {
     }
 
     // 태그 수정
-    @PatchMapping("/tags/{tagId}")
+    @PatchMapping("/todo-tags/{tagId}")
     public ResponseEntity<RspTemplate<Void>> handleUpdateTag(
             @PathVariable Long tagId,
             @RequestBody @Valid TagCreateReqDto reqDto
@@ -45,16 +45,18 @@ public class TodoTagController {
     }
 
     // 태그 삭제
-    @DeleteMapping("/tags/{tagId}")
-    public ResponseEntity<RspTemplate<Void>> handleDeleteTag(@PathVariable Long tagId) {
-        tagService.deleteTag(tagId);
+    @DeleteMapping("/todo-tags/{tagId}")
+    public ResponseEntity<RspTemplate<Void>> handleDeleteTag(
+            Authentication authentication,
+            @PathVariable Long tagId) {
+        tagService.deleteTag(tagId, Long.parseLong(authentication.getName()));
 
         RspTemplate<Void> rspTemplate = new RspTemplate<>(HttpStatus.OK, "태그가 삭제되었습니다.");
         return ResponseEntity.status(HttpStatus.OK).body(rspTemplate);
     }
 
     // 회원 ID로 모든 태그 조회
-    @GetMapping("/tags")
+    @GetMapping("/todo-tags")
     public ResponseEntity<TodoTagListResponse> handleGetAllTags(Authentication authentication) {
         long memberId = Long.parseLong(authentication.getName());
         List<TodoTag> tags = todoTagService.getAllTagsByMemberId(memberId);

@@ -1,8 +1,10 @@
 package com.codingbottle.calendar.domain.todo.service;
 
 import com.codingbottle.calendar.domain.member.entity.Member;
+import com.codingbottle.calendar.domain.member.repository.MemberRepository;
 import com.codingbottle.calendar.domain.todo.dto.TagCreateReqDto;
 import com.codingbottle.calendar.domain.todo.entity.TodoTag;
+import com.codingbottle.calendar.domain.todo.repository.TodoRepository;
 import com.codingbottle.calendar.domain.todo.repository.TodoTagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -45,9 +47,13 @@ public class TodoTagService {
 
     // 태그 속성 삭제
     @Transactional
-    public void deleteTag(Long tagId) {
-        TodoTag todoTag = todoTagRepository.findById(tagId)
+    public void deleteTag(long tagId, long memberId) {
+        TodoTag todoTag = todoTagRepository.findByIdFetchMember(tagId)
                 .orElseThrow(() -> new IllegalArgumentException("ID에 해당하는 태그를 찾을 수 없습니다: " + tagId));
+        if (todoTag.getMember().getId() != memberId) {
+            throw new IllegalArgumentException("태그를 삭제할 권한이 없습니다.");
+        }
+        todoRepository.deleteByTodoTag(todoTag);
 
         todoTagRepository.delete(todoTag);
     }
