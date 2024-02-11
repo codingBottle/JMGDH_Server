@@ -48,7 +48,7 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    // 검증 필터를 건너 띄어도 되는 경우
+    // 검증 필터를 건너 뛰어도 되는 경우
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String authorization = request.getHeader("Authorization");

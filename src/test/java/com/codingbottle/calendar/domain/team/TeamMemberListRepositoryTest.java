@@ -1,10 +1,10 @@
 package com.codingbottle.calendar.domain.team;
 
-import com.codingbottle.calendar.domain.Team.entity.Team;
-import com.codingbottle.calendar.domain.Team.entity.TeamCode;
-import com.codingbottle.calendar.domain.Team.entity.TeamMemberList;
-import com.codingbottle.calendar.domain.Team.repository.TeamMemberListRepository;
-import com.codingbottle.calendar.domain.Team.repository.TeamRepository;
+import com.codingbottle.calendar.domain.team.entity.Team;
+import com.codingbottle.calendar.domain.team.entity.TeamCode;
+import com.codingbottle.calendar.domain.team.entity.TeamMemberList;
+import com.codingbottle.calendar.domain.team.repository.TeamMemberListRepository;
+import com.codingbottle.calendar.domain.team.repository.TeamRepository;
 import com.codingbottle.calendar.domain.member.entity.Member;
 import com.codingbottle.calendar.domain.member.repository.MemberRepository;
 import org.junit.jupiter.api.Test;
