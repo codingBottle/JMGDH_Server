@@ -24,7 +24,7 @@ public class TodoTag extends BaseTimeEntity {
     @Column(nullable = false)
     private TagColor color;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 

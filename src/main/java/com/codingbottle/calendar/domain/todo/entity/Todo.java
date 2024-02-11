@@ -16,7 +16,7 @@ public class Todo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
@@ -29,9 +29,9 @@ public class Todo {
     @Column(nullable = false)
     private LocalDate date;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = TodoTag.class)
     @JoinColumn(name = "todo_tag_id", nullable = false)
-    private TodoTag todoTag;
+    public TodoTag todoTag;
 
     @Builder
     private Todo(Long id, Member member, String title, LocalDate date, TodoTag todoTag) {
@@ -41,10 +41,6 @@ public class Todo {
         this.date = date;
         this.todoTag = todoTag;
         this.isChecked = false;
-    }
-
-    public Member getId() {
-        return member;
     }
 
     public void toggleCheckStatus() {
