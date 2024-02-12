@@ -78,14 +78,13 @@ public class TodoController {
     }
 
     @GetMapping("/todos/date/{date}")
-    public ResponseEntity<TodoListResponse> handleGetTodos(
+    public ResponseEntity<RspTemplate<TodoListResponse>> handleGetTodos(
             Authentication authentication
             , @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date
     ) {
         TodoListResponse response = todoService.findAll(Long.parseLong(authentication.getName()), date);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+
+        RspTemplate<TodoListResponse> result = new RspTemplate<>(HttpStatus.OK, "태그와 할 일 목록 조회", response);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
-
-
 }
-

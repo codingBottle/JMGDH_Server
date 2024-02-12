@@ -28,8 +28,8 @@ public class TodoTagController {
             , Authentication authentication
     ) {
         tagService.createTag(reqDto, Long.parseLong(authentication.getName()));
-        RspTemplate<Void> rspTemplate = new RspTemplate<>(HttpStatus.CREATED, "새로운 태그 생성");
-        return ResponseEntity.status(HttpStatus.CREATED).body(rspTemplate);
+        RspTemplate<Void> result = new RspTemplate<>(HttpStatus.CREATED, "새로운 태그 생성");
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
     // 태그 수정
@@ -40,8 +40,8 @@ public class TodoTagController {
     ) {
         tagService.updateTag(tagId, reqDto);
 
-        RspTemplate<Void> rspTemplate = new RspTemplate<>(HttpStatus.OK, "태그가 수정되었습니다.");
-        return ResponseEntity.status(HttpStatus.OK).body(rspTemplate);
+        RspTemplate<Void> result = new RspTemplate<>(HttpStatus.OK, "태그가 수정되었습니다.");
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     // 태그 삭제
@@ -51,17 +51,18 @@ public class TodoTagController {
             @PathVariable Long tagId) {
         tagService.deleteTag(tagId, Long.parseLong(authentication.getName()));
 
-        RspTemplate<Void> rspTemplate = new RspTemplate<>(HttpStatus.OK, "태그가 삭제되었습니다.");
-        return ResponseEntity.status(HttpStatus.OK).body(rspTemplate);
+        RspTemplate<Void> result = new RspTemplate<>(HttpStatus.OK, "태그가 삭제되었습니다.");
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     // 회원 ID로 모든 태그 조회
     @GetMapping("/todo-tags")
-    public ResponseEntity<TodoTagListResponse> handleGetAllTags(Authentication authentication) {
+    public ResponseEntity<RspTemplate<TodoTagListResponse>> handleGetAllTags(Authentication authentication) {
         long memberId = Long.parseLong(authentication.getName());
         List<TodoTag> tags = todoTagService.getAllTagsByMemberId(memberId);
         TodoTagListResponse response = TodoTagListResponse.from(tags);
+        RspTemplate<TodoTagListResponse> result = new RspTemplate<>(HttpStatus.OK, "태그 목록 조회", response);
 
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 }
