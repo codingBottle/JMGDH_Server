@@ -2,6 +2,7 @@ package com.codingbottle.calendar.domain.todo.dto;
 
 import com.codingbottle.calendar.domain.todo.entity.TagColor;
 import com.codingbottle.calendar.domain.todo.entity.TodoTag;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +12,8 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 public class TodoListResponse {
-    List<TodoTagDto> todoTags;
+    @JsonProperty("todoTags")
+    List<TodoTagDto> todoTagDtos;
 
     public static TodoListResponse from(List<TodoTag> todoTags, List<TodoResponseWithTagId> todos) {
         // todoTags를 순회하면서 각각의 todoTag에 해당하는 todo들을 찾아서 TodoTagDto를 생성
@@ -33,6 +35,7 @@ public class TodoListResponse {
         long id;
         String tagName;
         TagColor color;
+        @JsonProperty("todos")
         List<TodoDto> todoDtos;
 
         static TodoTagDto from(TodoTag todoTag, List<TodoResponseWithTagId> todos) {
