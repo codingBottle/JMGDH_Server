@@ -1,7 +1,6 @@
 package com.codingbottle.calendar.domain.friend.entity;
 
 import com.codingbottle.calendar.domain.common.BaseTimeEntity;
-import com.codingbottle.calendar.domain.friend.dto.FriendReqDto;
 import com.codingbottle.calendar.domain.member.entity.Member;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -37,8 +36,17 @@ public class FriendRequest extends BaseTimeEntity {    // 친구 요청 목록
         this.status = status;
     }
 
-    //  친구 요청 상태 변경
-    public void updateStatus(FriendReqDto reqDto) {
-        this.status = reqDto.status();
+    // 친구 요청
+    public void pendingStatus(FriendRequest updateRequest) {
+        this.reqMember = updateRequest.reqMember;
+        this.rspMember = updateRequest.rspMember;
+        this.status = FriendshipStatus.PENDING;
+    }
+
+    // 친구 거절
+    public void denyStatus(FriendRequest updateRequest) {
+        this.reqMember = updateRequest.reqMember;
+        this.rspMember = updateRequest.rspMember;
+        this.status = FriendshipStatus.DENY;
     }
 }

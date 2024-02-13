@@ -2,7 +2,9 @@ package com.codingbottle.calendar.domain.friend.controller;
 
 import com.codingbottle.calendar.domain.friend.dto.FriendListRspDto;
 import com.codingbottle.calendar.domain.friend.dto.FriendReqDto;
+import com.codingbottle.calendar.domain.friend.dto.RequestListRspDto;
 import com.codingbottle.calendar.domain.friend.entity.Friend;
+import com.codingbottle.calendar.domain.friend.entity.FriendRequest;
 import com.codingbottle.calendar.domain.friend.service.FriendService;
 import com.codingbottle.calendar.global.api.RspTemplate;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +24,8 @@ public class FriendController {
 
     // 친구 요청
     @PostMapping("/send-request")
-    public ResponseEntity<RspTemplate<Void>> sendFriendRequest(@RequestBody @Validated FriendReqDto reqDto) {
-        friendService.sendFriendRequest(reqDto);
+    public ResponseEntity<RspTemplate<Void>> sendFriendRequest(@RequestBody @Validated FriendReqDto reqDto, Authentication authentication) {
+        friendService.sendFriendRequest(reqDto, Long.parseLong(authentication.getName()));
         RspTemplate<Void> rspTemplate = new RspTemplate<>(HttpStatus.CREATED,
                 reqDto.rspMember() + "님께 친구 요청을 보냈습니다.");
         return ResponseEntity.status(HttpStatus.CREATED).body(rspTemplate);
@@ -40,11 +42,19 @@ public class FriendController {
 
     // 요청 거절
     @PatchMapping("/reject-request")
-    public ResponseEntity<RspTemplate<Void>> rejectFriendRequest(@RequestBody FriendReqDto reqDto) {
-        friendService.rejectFriendRequest(reqDto);
+    public ResponseEntity<RspTemplate<Void>> rejectFriendRequest(@RequestBody FriendReqDto reqDto, Authentication authentication) {
+        friendService.rejectFriendRequest(reqDto, Long.parseLong(authentication.getName()));
         RspTemplate<Void> rspTemplate = new RspTemplate<>(HttpStatus.OK,
                 "친구 요청이 거절되었습니다.");
         return ResponseEntity.status(HttpStatus.OK).body(rspTemplate);
+    }
+
+    // 친추 요청 목록 조회
+    @GetMapping("/requests")
+    public RspTemplate<RequestListRspDto> getRequestList(Authentication authentication) {
+        List<FriendRequest> requests = friendService.getRequestList(Long.parseLong(authentication.getName()));
+        RequestListRspDto rspDto = RequestListRspDto.from(requests);
+        return new RspTemplate<>(HttpStatus.OK, "친추 요청 목록", rspDto);
     }
 
     // 친구 목록 조회
