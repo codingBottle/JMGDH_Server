@@ -2,6 +2,7 @@ package com.codingbottle.calendar.domain.member.service;
 
 import com.codingbottle.calendar.domain.member.entity.Member;
 import com.codingbottle.calendar.domain.member.repository.MemberRepository;
+import com.codingbottle.calendar.domain.schedule.entity.CalendarApiIntegration;
 import com.codingbottle.calendar.domain.todo.entity.TodoTag;
 import com.codingbottle.calendar.domain.todo.repository.TodoTagRepository;
 import com.codingbottle.calendar.global.exception.common.BusinessException;
@@ -42,6 +43,12 @@ public class MemberService {
                 .imageUrl(imageUrl)
                 .role(customAuthorityUtils.createUserRoles(email))
                 .build();
+
+        CalendarApiIntegration calendarApiIntegration = CalendarApiIntegration.builder()
+                .member(member)
+                .build();
+
+        member.setCalendarApiIntegration(calendarApiIntegration);
         member = memberRepository.save(member);
         saveInitData(member);
         return member;
@@ -122,6 +129,11 @@ public class MemberService {
         }
 
         return member;
+    }
+
+    @Transactional
+    public void saveMember(Member member) {
+        memberRepository.save(member);
     }
 
     private Boolean checkMember(Member member, String nickname, String imageUrl) {
