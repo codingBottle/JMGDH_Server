@@ -3,6 +3,7 @@ package com.codingbottle.calendar.domain.schedule.service;
 import com.codingbottle.calendar.domain.member.entity.Member;
 import com.codingbottle.calendar.domain.member.service.MemberService;
 import com.codingbottle.calendar.domain.schedule.dto.ScheduleCreateReqDto;
+import com.codingbottle.calendar.domain.schedule.entity.CalendarApiIntegration;
 import com.codingbottle.calendar.global.utils.GoogleCalendarConverter;
 import com.google.api.client.auth.oauth2.AuthorizationCodeFlow;
 import com.google.api.client.auth.oauth2.AuthorizationCodeRequestUrl;
@@ -64,62 +65,103 @@ public class CalendarApiIntegrationService {
         PeopleService peopleService = getPeople(credential);
 
         Person profile = getProfileFromPeopleService(peopleService);
+        Member member = memberService.getMemberByEmail(profile.getEmailAddresses().get(0).getValue());
 
-        String pageToken = null;
+        String pageToken = member.getCalendarApiIntegration().getLastPageToken();
         Events events = calendarService.events().list("primary").setPageToken(pageToken).execute();
         List<Event> items = events.getItems();
 
-        Member member = memberService.getMemberByEmail(profile.getEmailAddresses().get(0).getValue());
+        String lastPageToken;
+        String lastEventId = member.getCalendarApiIntegration().getLastEventId();
 
-        // Date, DateTime null값 확인 해야함.
-        do {
-            for (Event event : items) {
-                LocalDate startDate;
-                LocalDate endDate;
-                LocalTime startDateTime = null;
-                LocalTime endDateTime = null;
-                Boolean isAllDay = event.getCreated().isDateOnly();
-
-                // Date = null, DateTime == not null
-                if(event.getStart().getDate() == null) {
-                    startDate = googleCalendarConverter.convertDateTimeToLocalDate(event.getStart().getDateTime());
-                    endDate = googleCalendarConverter.convertDateTimeToLocalDate(event.getEnd().getDateTime());
-                    startDateTime = googleCalendarConverter.convertDateTimeToLocalTime(event.getStart().getDateTime());
-                    endDateTime = googleCalendarConverter.convertDateTimeToLocalTime(event.getEnd().getDateTime());
-
-                    LocalDateTime checkStartDateTime = LocalDateTime.of(startDate, startDateTime);
-                    LocalDateTime checkEndDateTime = LocalDateTime.of(endDate, endDateTime);
-
-                    // 두 시간의 차이가 24시간을 초과할 때 종일 일정으로 일정 추가
-                    if (checkStartDateTime.plusHours(24).isBefore(checkEndDateTime)) {
-                        startDateTime = null;
-                        endDateTime = null;
-                        isAllDay = true;
+        if (lastEventId == null) {
+            // Date, DateTime null값 확인 해야함.
+            do {
+                for (Event event : items) {
+                    lastEventId = integrationSchedule(event, member);
+                }
+                lastPageToken = pageToken;
+                pageToken = events.getNextPageToken();
+            } while (pageToken != null);
+        }
+        else {
+            // Date, DateTime null값 확인 해야함.
+            do {
+                boolean findStartEvent = false;
+                for (Event event : items) {
+                    if(findStartEvent) {
+                        lastEventId = integrationSchedule(event, member);
                     }
-                }
-                // Date == not null, DateTime == null
-                else {
-                    startDate = googleCalendarConverter.convertDateTimeToLocalDate(event.getStart().getDate());
-                    endDate = googleCalendarConverter.convertDateTimeToLocalDate(event.getEnd().getDate());
-                    isAllDay = true;
-                }
+                    else if(event.getId().equals(lastEventId)){
+                        findStartEvent = true;
+                    }
 
-                ScheduleCreateReqDto scheduleCreateReqDto = new ScheduleCreateReqDto(
-                        event.getSummary(),
-                        startDate,
-                        endDate,
-                        isAllDay,
-                        startDateTime,
-                        endDateTime,
-                        event.getColorId(),
-                        null,
-                        null
-                );
-                scheduleService.create(scheduleCreateReqDto, member.getId());
-            }
-            pageToken = events.getNextPageToken();
-        } while (pageToken != null);
+                }
+                lastPageToken = pageToken;
+                pageToken = events.getNextPageToken();
+            } while (pageToken != null);
+        }
+
+        CalendarApiIntegration calendarApiIntegration = member.getCalendarApiIntegration();
+
+        CalendarApiIntegration updateCalendarApiIntegration = calendarApiIntegration.toBuilder()
+                .lastPageToken(lastPageToken)
+                .lastEventId(lastEventId)
+                .build();
+
+        Member updateMember = member.toBuilder()
+                .calendarApiIntegration(updateCalendarApiIntegration)
+                .build();
+
+        memberService.saveMember(updateMember);
         log.info("구글 캘린더 api 연동 완료");
+    }
+
+    private String integrationSchedule(Event event, Member member) {
+        LocalDate startDate;
+        LocalDate endDate;
+        LocalTime startDateTime = null;
+        LocalTime endDateTime = null;
+        Boolean isAllDay = event.getCreated().isDateOnly();
+
+        // Date = null, DateTime == not null
+        if (event.getStart().getDate() == null) {
+            startDate = googleCalendarConverter.convertDateTimeToLocalDate(event.getStart().getDateTime());
+            endDate = googleCalendarConverter.convertDateTimeToLocalDate(event.getEnd().getDateTime());
+            startDateTime = googleCalendarConverter.convertDateTimeToLocalTime(event.getStart().getDateTime());
+            endDateTime = googleCalendarConverter.convertDateTimeToLocalTime(event.getEnd().getDateTime());
+
+            LocalDateTime checkStartDateTime = LocalDateTime.of(startDate, startDateTime);
+            LocalDateTime checkEndDateTime = LocalDateTime.of(endDate, endDateTime);
+
+// 두 시간의 차이가 24시간을 초과할 때 종일 일정으로 일정 추가
+            if (checkStartDateTime.plusHours(24).isBefore(checkEndDateTime)) {
+                startDateTime = null;
+                endDateTime = null;
+                isAllDay = true;
+            }
+        }
+// Date == not null, DateTime == null
+        else {
+            startDate = googleCalendarConverter.convertDateTimeToLocalDate(event.getStart().getDate());
+            endDate = googleCalendarConverter.convertDateTimeToLocalDate(event.getEnd().getDate());
+            isAllDay = true;
+        }
+
+        ScheduleCreateReqDto scheduleCreateReqDto = new ScheduleCreateReqDto(
+                event.getSummary(),
+                startDate,
+                endDate,
+                isAllDay,
+                startDateTime,
+                endDateTime,
+                event.getColorId(),
+                null,
+                null
+        );
+        scheduleService.create(scheduleCreateReqDto, member.getId());
+        String lastEventId = event.getId();
+        return lastEventId;
     }
 
     public String getRequestUrl() {
@@ -136,7 +178,7 @@ public class CalendarApiIntegrationService {
         AuthorizationCodeFlow flow = getAuthorizationCodeFlow();
         // 사용자로부터 받은 인증 코드로 액세스 토큰 및 리프레시 토큰을 요청합니다.
         AuthorizationCodeTokenRequest tokenRequest = flow.newTokenRequest(code)
-                .setRedirectUri(REDIRECT_URI);
+                .setRedirectUri(LOCAL_REDIRECT_URI);
         Credential credential = flow.createAndStoreCredential(tokenRequest.execute(), null);
 
         return credential;
