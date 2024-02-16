@@ -80,9 +80,10 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.setAllowCredentials(true); // 인증 정보 포함 가능
-        configuration.setAllowedOrigins(List.of(
-                "http://localhost:8080"                             // 모든 경로 CORS 허용(추후 Client URL 허용)
-        ));
+        configuration.setAllowedOriginPatterns(List.of("*")); // 이렇게 설정 시 모든 경로 CORS 허용 가능, 정규식 표현 가능. 좀 더 유연하게 도메인을 설정할 수 있다.
+//        configuration.setAllowedOrigins(List.of(
+//                "http://localhost:8080", "http://localhost:3000" // 모든 경로 CORS 허용(추후 Client URL 허용)
+//        ));
         configuration.setAllowedMethods(List.of("GET","POST", "PATCH", "DELETE")); // 허용된 HTTP 메서드
         configuration.setAllowedHeaders(List.of("*")); // 모든 헤더 허용
         configuration.setExposedHeaders(List.of("*")); // 모든 응답 헤더 표시
