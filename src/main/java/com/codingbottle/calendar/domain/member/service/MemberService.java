@@ -3,6 +3,8 @@ package com.codingbottle.calendar.domain.member.service;
 import com.codingbottle.calendar.domain.member.entity.Member;
 import com.codingbottle.calendar.domain.member.repository.MemberRepository;
 import com.codingbottle.calendar.domain.schedule.entity.CalendarApiIntegration;
+import com.codingbottle.calendar.domain.todo.entity.TodoTag;
+import com.codingbottle.calendar.domain.todo.repository.TodoTagRepository;
 import com.codingbottle.calendar.global.exception.common.BusinessException;
 import com.codingbottle.calendar.global.exception.common.ErrorCode;
 import com.codingbottle.calendar.global.utils.CustomAuthorityUtils;
@@ -10,19 +12,23 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
 @Service
 @Transactional(readOnly = true)
 public class MemberService {
+    private final TodoTagRepository todoTagRepository;
     private final MemberRepository memberRepository;
     private final CustomAuthorityUtils customAuthorityUtils;
 
-    public MemberService(MemberRepository memberRepository, CustomAuthorityUtils customAuthorityUtils) {
+    public MemberService(MemberRepository memberRepository, CustomAuthorityUtils customAuthorityUtils,
+                         TodoTagRepository todoTagRepository) {
         this.memberRepository = memberRepository;
         this.customAuthorityUtils = customAuthorityUtils;
 
+        this.todoTagRepository = todoTagRepository;
     }
 
     // 회원가입
@@ -44,8 +50,13 @@ public class MemberService {
 
         member.setCalendarApiIntegration(calendarApiIntegration);
         member = memberRepository.save(member);
-
+        saveInitData(member);
         return member;
+    }
+
+    private void saveInitData(Member member) {
+        List<TodoTag> todoTags = TodoTag.generateInitialTags(member);
+        todoTagRepository.saveAll(todoTags);
     }
 
     @Transactional
