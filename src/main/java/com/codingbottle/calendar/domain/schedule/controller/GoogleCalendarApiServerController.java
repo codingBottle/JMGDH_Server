@@ -1,13 +1,12 @@
 package com.codingbottle.calendar.domain.schedule.controller;
 
 import com.codingbottle.calendar.domain.schedule.service.CalendarApiIntegrationService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @RestController
@@ -25,8 +24,8 @@ public class GoogleCalendarApiServerController {
     }
 
     @GetMapping("/callback")
-    public ResponseEntity callback(@RequestParam("code") String code) throws IOException {
+    public void callback(@RequestParam("code") String code, HttpServletResponse response) throws IOException {
         calendarApiIntegrationService.scheduleIntegration(code);
-        return new ResponseEntity(HttpStatus.OK);
+        response.sendRedirect("http://localhost:3000/test");
     }
 }

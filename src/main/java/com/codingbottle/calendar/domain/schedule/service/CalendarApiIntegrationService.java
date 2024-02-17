@@ -13,6 +13,7 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.Event;
@@ -23,7 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -68,7 +68,7 @@ public class CalendarApiIntegrationService {
         Member member = memberService.getMemberByEmail(profile.getEmailAddresses().get(0).getValue());
 
         String pageToken = member.getCalendarApiIntegration().getLastPageToken();
-        Events events = calendarService.events().list("primary").setPageToken(pageToken).execute();
+        Events events = calendarService.events().list("primary").setTimeMin(DateTime.parseRfc3339("2023-12-01T00:00:00+09:00")).setPageToken(pageToken).execute();
         List<Event> items = events.getItems();
 
         String lastPageToken;
