@@ -149,7 +149,7 @@ public class CalendarApiIntegrationService {
         }
 
         ScheduleCreateReqDto scheduleCreateReqDto = new ScheduleCreateReqDto(
-                event.getSummary(),
+                event.getSummary() == null ? "제목 없음" : event.getSummary(),
                 startDate,
                 endDate,
                 isAllDay,
