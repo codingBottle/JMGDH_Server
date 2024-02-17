@@ -178,7 +178,7 @@ public class CalendarApiIntegrationService {
         AuthorizationCodeFlow flow = getAuthorizationCodeFlow();
         // 사용자로부터 받은 인증 코드로 액세스 토큰 및 리프레시 토큰을 요청합니다.
         AuthorizationCodeTokenRequest tokenRequest = flow.newTokenRequest(code)
-                .setRedirectUri(LOCAL_REDIRECT_URI);
+                .setRedirectUri(REDIRECT_URI);
         Credential credential = flow.createAndStoreCredential(tokenRequest.execute(), null);
 
         return credential;
