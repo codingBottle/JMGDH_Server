@@ -68,7 +68,11 @@ public class CalendarApiIntegrationService {
         Member member = memberService.getMemberByEmail(profile.getEmailAddresses().get(0).getValue());
 
         String pageToken = member.getCalendarApiIntegration().getLastPageToken();
-        Events events = calendarService.events().list("primary").setTimeMin(DateTime.parseRfc3339("2023-12-01T00:00:00+09:00")).setPageToken(pageToken).execute();
+        Events events = calendarService.events()
+                .list("primary")
+                .setTimeMin(DateTime.parseRfc3339("2023-12-01T00:00:00+09:00"))
+                .setPageToken(pageToken).execute()
+                .set("singleEvents", true);
         List<Event> items = events.getItems();
 
         String lastPageToken;
