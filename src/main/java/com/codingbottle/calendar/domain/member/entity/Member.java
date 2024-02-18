@@ -28,7 +28,7 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false)
     private String imageUrl;
 
-    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, optional = false)
+    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, optional = false, fetch = FetchType.LAZY)
     private CalendarApiIntegration calendarApiIntegration;
 
     @ElementCollection(fetch = FetchType.EAGER)
