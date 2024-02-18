@@ -4,6 +4,7 @@ import com.codingbottle.calendar.domain.auth.cache.OAuthOTUCache;
 import com.codingbottle.calendar.domain.auth.jwt.JwtTokenizer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,5 +28,14 @@ public class TestMemberTokenProvider {
     @GetMapping("/test/otu-token")
     public String testOtuToken() {
         return oAuthOTUCache.putVerificationCodeInCache(1L);
+    }
+
+    @GetMapping("/test/member/{memberId}/access-token")
+    public String testMemberAccessToken(
+            @PathVariable("memberId") Long memberId
+    ) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("roles", List.of("USER"));
+        return jwtTokenizer.generateAccessToken(map, memberId.toString());
     }
 }
