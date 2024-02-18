@@ -5,6 +5,7 @@ import com.codingbottle.calendar.global.exception.common.ErrorCode;
 import com.codingbottle.calendar.global.exception.common.AppServiceException;
 import com.codingbottle.calendar.global.exception.common.BusinessException;
 import com.codingbottle.calendar.global.exception.dto.ErrorResponseDto;
+import com.codingbottle.calendar.global.utils.LoggingUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -93,8 +94,9 @@ public class GlobalExceptionHandler {
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         log.error("예외처리 범위 외의 오류 발생.");
         printLog(e, request);
+        String fullStackTrace = LoggingUtil.stackTraceToString(e);
 
-        return createErrorResponse(httpStatus.value(), httpStatus, e.getMessage());
+        return createErrorResponse(httpStatus.value(), httpStatus, e.getMessage() +", " + fullStackTrace);
     }
 
     private <T> ResponseEntity<ErrorResponseDto<T>> createErrorResponse(int statusCode, HttpStatus httpStatus, T errorMessage) {
