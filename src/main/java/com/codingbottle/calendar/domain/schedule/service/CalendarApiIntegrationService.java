@@ -5,6 +5,7 @@ import com.codingbottle.calendar.domain.member.service.MemberService;
 import com.codingbottle.calendar.domain.schedule.dto.ScheduleCreateReqDto;
 import com.codingbottle.calendar.domain.schedule.entity.CalendarApiIntegration;
 import com.codingbottle.calendar.global.utils.GoogleCalendarConverter;
+import com.codingbottle.calendar.global.utils.Rfc3339DateConverter;
 import com.google.api.client.auth.oauth2.AuthorizationCodeFlow;
 import com.google.api.client.auth.oauth2.AuthorizationCodeRequestUrl;
 import com.google.api.client.auth.oauth2.AuthorizationCodeTokenRequest;
@@ -68,19 +69,27 @@ public class CalendarApiIntegrationService {
         Member member = memberService.getMemberByEmail(profile.getEmailAddresses().get(0).getValue());
 
         String pageToken = member.getCalendarApiIntegration().getLastPageToken();
-        Events events = calendarService.events()
-                .list("primary")
-                .setTimeMin(DateTime.parseRfc3339("2023-12-01T00:00:00+09:00"))
-                .setPageToken(pageToken).execute()
-                .set("singleEvents", true);
-        List<Event> items = events.getItems();
 
         String lastPageToken;
         String lastEventId = member.getCalendarApiIntegration().getLastEventId();
 
+        LocalDate standardNow = LocalDate.of(LocalDate.now().getYear(), 12, 1);
+        LocalDate maxDate = standardNow.plusYears(2);
+        LocalDate minDate = standardNow.minusYears(2);
+
         if (lastEventId == null) {
             // Date, DateTime null값 확인 해야함.
             do {
+                Events events = calendarService.events()
+                        .list("primary")
+                        .setTimeMin(DateTime.parseRfc3339(Rfc3339DateConverter.convertNowLocalDateToRfc3339(minDate)))
+                        .setTimeMax(DateTime.parseRfc3339(Rfc3339DateConverter.convertNowLocalDateToRfc3339(maxDate)))
+                        .set("singleEvents", true)
+                        .setPageToken(pageToken)
+                        .execute();
+
+                List<Event> items = events.getItems();
+
                 for (Event event : items) {
                     if (event.getCreated() == null) {
                         continue;
@@ -94,6 +103,16 @@ public class CalendarApiIntegrationService {
         else {
             // Date, DateTime null값 확인 해야함.
             do {
+                Events events = calendarService.events()
+                        .list("primary")
+                        .setTimeMin(DateTime.parseRfc3339("2023-12-01T00:00:00+09:00"))
+                        .setTimeMax(DateTime.parseRfc3339("2025-12-01T00:00:00+09:00"))
+                        .set("singleEvents", true)
+                        .setPageToken(pageToken)
+                        .execute();
+
+                List<Event> items = events.getItems();
+
                 boolean findStartEvent = false;
                 for (Event event : items) {
                     if (event.getCreated() == null) {
@@ -155,6 +174,8 @@ public class CalendarApiIntegrationService {
         else {
             startDate = googleCalendarConverter.convertDateTimeToLocalDate(event.getStart().getDate());
             endDate = googleCalendarConverter.convertDateTimeToLocalDate(event.getEnd().getDate());
+            // 구글 캘린더에서 종일 일정의 endDate를 +1해서 넘겨주기에 하루 빼서 저장한다.
+            endDate = endDate.minusDays(1);
             isAllDay = true;
         }
 

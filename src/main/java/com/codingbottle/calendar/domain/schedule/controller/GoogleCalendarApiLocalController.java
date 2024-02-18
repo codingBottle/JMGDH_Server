@@ -12,12 +12,15 @@ import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.Events;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,7 +37,7 @@ public class GoogleCalendarApiLocalController {
     private static final String REDIRECT_URI = "http://localhost:8888/Callback"; // This should be the same as the one in the Google Cloud Console
 
     @GetMapping("/authorize-google")
-    public String authorizeGoogle(@AuthenticationPrincipal String email) throws IOException {
+    public ResponseEntity authorizeGoogle(@AuthenticationPrincipal String email) throws IOException {
         // HTTP Transport 초기화
         NetHttpTransport httpTransport = new NetHttpTransport();
 
@@ -66,14 +69,20 @@ public class GoogleCalendarApiLocalController {
 
         // service 객체를 사용하여 Google Calendar API에 액세스할 수 있다
         String pageToken = null;
+        List<Event> totalEvents = new ArrayList<>();
+
         do {
-            Events events = service.events().list("primary").setPageToken(pageToken).execute();
+            Events events = service.events()
+                    .list("primary")
+                    .setPageToken(pageToken)
+                    .set("singleEvents", true)
+                    .execute();
             List<Event> items = events.getItems();
             for (Event event : items) {
-                System.out.println(event.getSummary());
+                totalEvents.add(event);
             }
             pageToken = events.getNextPageToken();
         } while (pageToken != null);
-        return "Success";
+        return new ResponseEntity(totalEvents, HttpStatus.OK);
     }
 }
