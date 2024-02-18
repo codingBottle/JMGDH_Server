@@ -82,6 +82,9 @@ public class CalendarApiIntegrationService {
             // Date, DateTime null값 확인 해야함.
             do {
                 for (Event event : items) {
+                    if (event.getCreated() == null) {
+                        continue;
+                    }
                     lastEventId = integrationSchedule(event, member);
                 }
                 lastPageToken = pageToken;
@@ -93,6 +96,9 @@ public class CalendarApiIntegrationService {
             do {
                 boolean findStartEvent = false;
                 for (Event event : items) {
+                    if (event.getCreated() == null) {
+                        continue;
+                    }
                     if(findStartEvent) {
                         lastEventId = integrationSchedule(event, member);
                     }
