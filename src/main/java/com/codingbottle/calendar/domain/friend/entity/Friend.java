@@ -17,12 +17,12 @@ public class Friend extends BaseTimeEntity {   // 친구가 된 Entity
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member1", nullable = false, referencedColumnName = "email")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "member1", nullable = false)
     private Member member1;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member2", nullable = false, referencedColumnName = "email")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "member2", nullable = false)
     private Member member2;
 
     @Enumerated(EnumType.STRING)
