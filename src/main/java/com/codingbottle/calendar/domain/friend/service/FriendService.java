@@ -62,7 +62,7 @@ public class FriendService {
 
         // 요청자와 회원 정보가 일치하지 않으면 예외
         Member member = friendRequest.getReqMember();
-        if(member.getId() != reqMember.getId()) {
+        if(!member.getId().equals(reqMember.getId())) {
             throw new IllegalStateException("회원 정보가 일치하지 않습니다.");
         }
 
@@ -111,7 +111,7 @@ public class FriendService {
 
         // 요청 받은 자와 회원 정보가 일치하지 않으면 예외
         Member member = friendRequest.getRspMember();
-        if(member != rspMember) {
+        if(!member.getId().equals(rspMember.getId())) {
             throw new IllegalStateException("회원 정보가 일치하지 않습니다.");
         }
 
