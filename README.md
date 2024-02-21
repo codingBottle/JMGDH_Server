@@ -57,7 +57,8 @@
 1. [Java](https://www.java.com) 및 [Spring Boot](https://spring.io/projects/spring-boot) 설치
 2. [MySQL](https://www.mysql.com) 설치 및 설정
 3. [IntelliJ IDEA](https://www.jetbrains.com/idea) 설치
-4. ...
+4. [Postman](https://www.postman.com/downloads) 설치
+5. ...
 
 <br><br>
 ## 설치 및 실행
@@ -72,7 +73,7 @@
 ./mvnw spring-boot:run(그냥 예시로 적어둔것 수정해야함)
 ```
 
-1. 브라우저에서 [For_It Calendar](https://www.jmgdh.duckdns.org/test){:target="_blank"} 에 접속하여 애플리케이션을 사용합니다.
+1. 브라우저에서 [For_It Calendar](https://www.jmgdh.duckdns.org/test)에 접속하여 애플리케이션을 사용합니다.
    
 
 <br><br>
