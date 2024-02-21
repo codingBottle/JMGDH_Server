@@ -19,12 +19,12 @@ public class FriendRequest extends BaseTimeEntity {    // 친구 요청 목록
 
     //  친구 요청을 보낸 사람
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "requester", nullable = false, referencedColumnName = "email")
+    @JoinColumn(name = "requester", nullable = false)
     private Member reqMember;
 
     //  친구 요청을 받은 사람
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "recipient", nullable = false, referencedColumnName = "email")
+    @JoinColumn(name = "recipient", nullable = false)
     private Member rspMember;
 
     @Enumerated(EnumType.STRING)
@@ -37,16 +37,12 @@ public class FriendRequest extends BaseTimeEntity {    // 친구 요청 목록
     }
 
     // 친구 요청
-    public void pendingStatus(FriendRequest updateRequest) {
-        this.reqMember = updateRequest.reqMember;
-        this.rspMember = updateRequest.rspMember;
+    public void pendingStatus() {
         this.status = FriendshipStatus.PENDING;
     }
 
     // 친구 거절
-    public void denyStatus(FriendRequest updateRequest) {
-        this.reqMember = updateRequest.reqMember;
-        this.rspMember = updateRequest.rspMember;
+    public void denyStatus() {
         this.status = FriendshipStatus.DENY;
     }
 }

@@ -66,7 +66,7 @@ public class CalendarApiIntegrationService {
         PeopleService peopleService = getPeople(credential);
 
         Person profile = getProfileFromPeopleService(peopleService);
-        Member member = memberService.getMemberByEmail(profile.getEmailAddresses().get(0).getValue());
+        Member member = memberService.getByEmail(profile.getEmailAddresses().get(0).getValue());
 
         String pageToken = member.getCalendarApiIntegration().getLastPageToken();
 
