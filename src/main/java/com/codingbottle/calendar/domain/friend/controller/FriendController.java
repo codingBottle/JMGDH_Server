@@ -58,9 +58,9 @@ public class FriendController {
     }
 
     // 친구 목록 조회
-    @GetMapping("{email}")
-    public RspTemplate<FriendListRspDto> getFriendList(@PathVariable String email) {
-        List<Friend> friends = friendService.getFriendList(email);
+    @GetMapping
+    public RspTemplate<FriendListRspDto> getFriendList(Authentication authentication) {
+        List<Friend> friends = friendService.getFriendList(Long.parseLong(authentication.getName()));
         FriendListRspDto rspDto = FriendListRspDto.from(friends);
         return new RspTemplate<>(HttpStatus.OK, "친구 목록", rspDto);
     }

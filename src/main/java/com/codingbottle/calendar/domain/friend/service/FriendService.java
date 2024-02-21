@@ -68,6 +68,7 @@ public class FriendService {
 
         // 친구 요청 저장
         friendRequestRepository.save(friendRequest);
+
     }
 
     // 친구 요청 수락
@@ -130,9 +131,9 @@ public class FriendService {
     }
 
     // 친구 목록 조회
-    public List<Friend> getFriendList(String email) {
+    public List<Friend> getFriendList(long memberId) {
         // 회원이 없는 경우 예외
-        Member member = memberRepository.findByEmail(email)
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NoSuchElementException("회원을 찾을 수 없습니다."));
 
         return friendRepository.findFriendsByMember(member);
