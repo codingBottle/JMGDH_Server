@@ -1,8 +1,7 @@
-<img src="https://github.com/codingBottle/JMGDH_Server/assets/85906821/efc018d7-dcee-4a90-a3d0-d5f3469f0eda" alt="포잇캘린더 로고" width="40" height="40">
-# 포잇캘린더
+# <img src="https://github.com/codingBottle/JMGDH_Server/assets/85906821/9d0d5123-81e6-4701-b966-72edaf2507b3" alt="포잇캘린더 로고" width="50" height="50"></img> 포잇캘린더 
 
 포잇캘린더는 구글 연동을 통해 개인 캘린더를 만들고 일정을 관리할 수 있는 웹 어플리케이션입니다. 사용자는 간편한 구글 로그인을 통해 개인 캘린더를 생성하고, 다양한 일정을 추가, 수정, 삭제할 수 있습니다.
-
+<br><br>
 ## 주요 기능
 
 ### 캘린더
@@ -40,7 +39,7 @@
 ### 로그인/회원가입
 - **only 구글 연동**
 
-
+<br><br>
 ## 제작 과정
 
 ### 사용된 언어 및 도구
@@ -60,6 +59,7 @@
 3. [IntelliJ IDEA](https://www.jetbrains.com/idea) 설치
 4. ...
 
+<br><br>
 ## 설치 및 실행
 
 1. 소스 코드를 다운로드하거나 복제합니다.
@@ -72,9 +72,10 @@
 ./mvnw spring-boot:run(그냥 예시로 적어둔것 수정해야함)
 ```
 
-1. 브라우저에서 [http://localhost:80800](https://www.jmgdh.duckdns.org/test)에 접속하여 애플리케이션을 사용합니다.
+1. 브라우저에서 [For_It Calendar](https://www.jmgdh.duckdns.org/test){:target="_blank"} 에 접속하여 애플리케이션을 사용합니다.
+   
 
-
+<br><br>
 ## 기여
 프로젝트에 기여하고 싶으시다면, 이슈를 생성하거나 풀 리퀘스트를 보내주세요. 우리의 프로젝트를 함께 발전시켜 나가요!
 
