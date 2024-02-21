@@ -1,4 +1,5 @@
-![poitLogo](https://github.com/codingBottle/JMGDH_Server/assets/85906821/efc018d7-dcee-4a90-a3d0-d5f3469f0eda)
+<img src="https://github.com/codingBottle/JMGDH_Server/assets/85906821/efc018d7-dcee-4a90-a3d0-d5f3469f0eda" alt="포잇캘린더 로고" width="20" height="20">
+
 # 포잇캘린더
 
 포잇캘린더는 구글 연동을 통해 개인 캘린더를 만들고 일정을 관리할 수 있는 웹 어플리케이션입니다. 사용자는 간편한 구글 로그인을 통해 개인 캘린더를 생성하고, 다양한 일정을 추가, 수정, 삭제할 수 있습니다.
