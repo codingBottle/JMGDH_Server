@@ -81,7 +81,7 @@ public class MemberService {
         return member;
     }
 
-    public Member getMemberByEmail(String email) {
+    public Member getByEmail(String email) {
         Optional<Member> optionalMember = memberRepository.findByEmail(email);
         Member member = optionalMember.orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 

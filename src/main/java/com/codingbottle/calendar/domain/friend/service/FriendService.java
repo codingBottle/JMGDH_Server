@@ -8,6 +8,7 @@ import com.codingbottle.calendar.domain.friend.repository.FriendRepository;
 import com.codingbottle.calendar.domain.friend.repository.FriendRequestRepository;
 import com.codingbottle.calendar.domain.member.entity.Member;
 import com.codingbottle.calendar.domain.member.repository.MemberRepository;
+import com.codingbottle.calendar.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,7 @@ public class FriendService {
     private final MemberRepository memberRepository;
     private final FriendRequestRepository friendRequestRepository;
     private final FriendRepository friendRepository;
+    private final MemberService memberService;
 
     //  친구 요청
     @Transactional
@@ -42,13 +44,13 @@ public class FriendService {
 
         // 거절 후 친구 재요청일 경우 상태 업데이트
         if (friendRequest != null && friendRequest.getStatus() == FriendshipStatus.DENY) {
-            friendRequest.pendingStatus(reqDto.toFriendRequest(memberRepository));
+            friendRequest.pendingStatus();
         }
 
         // 기존 요청이 없는 경우 새로운 요청 생성 (자기 자신에겐 친구 요청 불가)
         // 대기 중인 요청이 있는데 뒤바뀐 요청이 들어올 경우에도 새로운 요청 생성
         else if (friendRequest == null && !reqMember.equals(rspMember)) {
-            friendRequest = reqDto.toFriendRequest(memberRepository);
+            friendRequest = new FriendRequest(reqMember, rspMember, FriendshipStatus.PENDING);
             // 요청자와 응답자가 뒤바뀐 경우 기존에 있던 요청을 삭제
             friendRequestRepository.findByReqMemberAndRspMember(rspMember, reqMember).ifPresent(friendRequestRepository::delete);
         }
@@ -60,7 +62,7 @@ public class FriendService {
 
         // 요청자와 회원 정보가 일치하지 않으면 예외
         Member member = friendRequest.getReqMember();
-        if(member != reqMember) {
+        if(member.getId() != reqMember.getId()) {
             throw new IllegalStateException("회원 정보가 일치하지 않습니다.");
         }
 
@@ -114,7 +116,7 @@ public class FriendService {
         }
 
         // 상태 업데이트
-        friendRequest.denyStatus(reqDto.toFriendRequest(memberRepository));
+        friendRequest.denyStatus();
         friendRequestRepository.save(friendRequest);
     }
 
