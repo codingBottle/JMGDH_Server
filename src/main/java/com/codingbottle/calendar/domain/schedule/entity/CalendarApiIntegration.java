@@ -17,7 +17,7 @@ public class CalendarApiIntegration extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = true)
+    @Column(nullable = true, length = 2000)
     private String lastPageToken;
 
     @Column(nullable = true)
