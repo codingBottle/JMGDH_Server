@@ -62,12 +62,13 @@ public class FriendService {
 
         // 요청자와 회원 정보가 일치하지 않으면 예외
         Member member = friendRequest.getReqMember();
-        if(member.getId() != reqMember.getId()) {
+        if(!member.getId().equals(reqMember.getId())) {
             throw new IllegalStateException("회원 정보가 일치하지 않습니다.");
         }
 
         // 친구 요청 저장
         friendRequestRepository.save(friendRequest);
+
     }
 
     // 친구 요청 수락
@@ -111,7 +112,7 @@ public class FriendService {
 
         // 요청 받은 자와 회원 정보가 일치하지 않으면 예외
         Member member = friendRequest.getRspMember();
-        if(member != rspMember) {
+        if(!member.getId().equals(rspMember.getId())) {
             throw new IllegalStateException("회원 정보가 일치하지 않습니다.");
         }
 
@@ -130,9 +131,9 @@ public class FriendService {
     }
 
     // 친구 목록 조회
-    public List<Friend> getFriendList(String email) {
+    public List<Friend> getFriendList(long memberId) {
         // 회원이 없는 경우 예외
-        Member member = memberRepository.findByEmail(email)
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NoSuchElementException("회원을 찾을 수 없습니다."));
 
         return friendRepository.findFriendsByMember(member);
