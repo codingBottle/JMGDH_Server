@@ -23,7 +23,7 @@ public class CalendarApiIntegration extends BaseTimeEntity {
     @Column(nullable = true)
     private String lastEventId;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 

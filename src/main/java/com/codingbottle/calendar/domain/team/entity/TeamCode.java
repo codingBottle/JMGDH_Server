@@ -23,7 +23,7 @@ public class TeamCode {
     @Column(nullable = false)
     private LocalDateTime expirationTime;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
     private Team team;
 
