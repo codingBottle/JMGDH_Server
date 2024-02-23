@@ -55,8 +55,9 @@ public class OAuth2MemberSuccessHandler extends SimpleUrlAuthenticationSuccessHa
 
         return UriComponentsBuilder
                 .newInstance()
-                .scheme("https")
-                .host("www.jmgdh.duckdns.org")
+                .scheme("http")
+                .host("localhost")
+                .port(3000)
                 .path("/oauth2/success")
                 .queryParams(queryParams)
                 .build()
