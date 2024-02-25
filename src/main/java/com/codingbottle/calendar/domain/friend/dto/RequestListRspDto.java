@@ -2,6 +2,7 @@ package com.codingbottle.calendar.domain.friend.dto;
 
 import com.codingbottle.calendar.domain.friend.entity.FriendRequest;
 import com.codingbottle.calendar.domain.member.entity.Member;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -39,10 +40,13 @@ public class RequestListRspDto {
         static class MemberDto {
             String nickname;
             String email;
+            @JsonProperty("profileImage")
+            String profileImageUrl;
 
             public MemberDto(Member member) {
                 this.nickname = member.getNickname();
                 this.email = member.getEmail();
+                this.profileImageUrl = member.getImageUrl();
             }
         }
     }
