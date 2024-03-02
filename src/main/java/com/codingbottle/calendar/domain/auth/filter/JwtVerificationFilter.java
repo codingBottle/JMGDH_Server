@@ -52,7 +52,7 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String authorization = request.getHeader("Authorization");
-        request.setAttribute("exception", null);
+
         // Authorization이 유효하지 않을 경우 true를 반환해서 필터를 실행하지 않도록 한다.
         return authorization == null || !authorization.startsWith("Bearer");
     }
@@ -61,9 +61,8 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     private Claims verifyJws(HttpServletRequest request) {
         String jws = request.getHeader("Authorization").replace("Bearer ", "");
         String secretKey = jwtTokenizer.getSecretKey();
-        Claims claims = jwtTokenizer.getClaims(jws, secretKey).getBody();
 
-        return claims;
+        return jwtTokenizer.getClaims(jws, secretKey).getBody();
     }
 
     // SecurityContextHolder에 Authentication 객체 올리는 메소드

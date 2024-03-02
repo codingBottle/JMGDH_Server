@@ -26,6 +26,6 @@ public class GoogleCalendarApiServerController {
     @GetMapping("/callback")
     public void callback(@RequestParam("code") String code, HttpServletResponse response) throws IOException {
         calendarApiIntegrationService.scheduleIntegration(code);
-        response.sendRedirect("http://localhost:3000/test");
+        response.sendRedirect("https://www.jmgdh.duckdns.org/test");
     }
 }
