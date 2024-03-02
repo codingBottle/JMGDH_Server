@@ -10,6 +10,7 @@ import com.codingbottle.calendar.global.utils.CustomAuthorityUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -60,6 +61,33 @@ public class SecurityConfig {
                 .apply(new CustomFilterConfigurer())
                 .and()
                 .authorizeHttpRequests(authorize -> authorize
+                        .antMatchers(HttpMethod.GET, "/members/**").hasRole("USER")
+
+                        .antMatchers(HttpMethod.POST, "/schedules/**").hasRole("USER")
+                        .antMatchers(HttpMethod.PATCH, "/schedules/**").hasRole("USER")
+                        .antMatchers(HttpMethod.DELETE, "/schedules/**").hasRole("USER")
+                        .antMatchers(HttpMethod.GET, "/schedules/**").hasRole("USER")
+
+                        .antMatchers(HttpMethod.POST, "/todo-tags/**").hasRole("USER")
+                        .antMatchers(HttpMethod.PATCH, "/todo-tags/**").hasRole("USER")
+                        .antMatchers(HttpMethod.DELETE, "/todo-tags/**").hasRole("USER")
+                        .antMatchers(HttpMethod.GET, "/todo-tags/**").hasRole("USER")
+
+                        .antMatchers(HttpMethod.POST, "/todos/**").hasRole("USER")
+                        .antMatchers(HttpMethod.PATCH, "/todos/**").hasRole("USER")
+                        .antMatchers(HttpMethod.DELETE, "/todos/**").hasRole("USER")
+                        .antMatchers(HttpMethod.GET, "/todos/**").hasRole("USER")
+
+                        .antMatchers(HttpMethod.POST, "/friends/**").hasRole("USER")
+                        .antMatchers(HttpMethod.PATCH, "/friends/**").hasRole("USER")
+                        .antMatchers(HttpMethod.DELETE, "/friends/**").hasRole("USER")
+                        .antMatchers(HttpMethod.GET, "/friends/**").hasRole("USER")
+
+                        .antMatchers(HttpMethod.POST, "/teams/**").hasRole("USER")
+                        .antMatchers(HttpMethod.PATCH, "/teams/**").hasRole("USER")
+                        .antMatchers(HttpMethod.DELETE, "/teams/**").hasRole("USER")
+                        .antMatchers(HttpMethod.GET, "/teams/**").hasRole("USER")
+
                         .anyRequest().permitAll() // 모든 접근 허용
                 )
                 .oauth2Login(oauth2 -> oauth2
