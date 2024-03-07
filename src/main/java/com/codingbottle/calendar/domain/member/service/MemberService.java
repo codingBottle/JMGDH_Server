@@ -3,12 +3,15 @@ package com.codingbottle.calendar.domain.member.service;
 import com.codingbottle.calendar.domain.member.entity.Member;
 import com.codingbottle.calendar.domain.member.repository.MemberRepository;
 import com.codingbottle.calendar.domain.schedule.entity.CalendarApiIntegration;
+import com.codingbottle.calendar.domain.team.dto.TeamMemberRspDto;
+import com.codingbottle.calendar.domain.team.service.TeamService;
 import com.codingbottle.calendar.domain.todo.entity.TodoTag;
 import com.codingbottle.calendar.domain.todo.repository.TodoTagRepository;
 import com.codingbottle.calendar.global.exception.common.BusinessException;
 import com.codingbottle.calendar.global.exception.common.ErrorCode;
 import com.codingbottle.calendar.global.utils.CustomAuthorityUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,13 +25,14 @@ public class MemberService {
     private final TodoTagRepository todoTagRepository;
     private final MemberRepository memberRepository;
     private final CustomAuthorityUtils customAuthorityUtils;
+    private final TeamService teamService;
 
     public MemberService(MemberRepository memberRepository, CustomAuthorityUtils customAuthorityUtils,
-                         TodoTagRepository todoTagRepository) {
+                         TodoTagRepository todoTagRepository, @Lazy TeamService teamService) {
         this.memberRepository = memberRepository;
         this.customAuthorityUtils = customAuthorityUtils;
-
         this.todoTagRepository = todoTagRepository;
+        this.teamService = teamService;
     }
 
     // 회원가입
@@ -134,6 +138,19 @@ public class MemberService {
     @Transactional
     public void saveMember(Member member) {
         memberRepository.save(member);
+    }
+
+    @Transactional
+    public void deleteMember(long memberId) {
+        Member member = existsMemberById(memberId);
+        List<TeamMemberRspDto> teamMemberRspDtos = teamService.findTeamRspDtosByMemberId(memberId);
+
+        // 회원탈퇴시 회원이 리더인 팀을 모두 삭제시킨다
+        for(TeamMemberRspDto teamMemberRspDto : teamMemberRspDtos) {
+            if(teamMemberRspDto.getTeamRspDto().getLeader().id().equals(memberId))
+                teamService.deleteTeam(teamMemberRspDto.getTeamRspDto().getId(), memberId);
+        }
+        memberRepository.delete(member);
     }
 
     private Boolean checkMember(Member member, String nickname, String imageUrl) {

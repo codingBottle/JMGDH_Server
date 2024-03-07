@@ -3,12 +3,12 @@ package com.codingbottle.calendar.domain.team.service;
 import com.codingbottle.calendar.domain.team.dto.*;
 import com.codingbottle.calendar.domain.team.entity.Team;
 import com.codingbottle.calendar.domain.team.entity.TeamCode;
-import com.codingbottle.calendar.domain.team.entity.TeamMemberList;
+import com.codingbottle.calendar.domain.team.entity.TeamMember;
 import com.codingbottle.calendar.domain.team.mapper.TeamCodeMapper;
 import com.codingbottle.calendar.domain.team.mapper.TeamMapper;
 import com.codingbottle.calendar.domain.team.mapper.TeamScheduleMapper;
 import com.codingbottle.calendar.domain.team.repository.TeamCodeRepository;
-import com.codingbottle.calendar.domain.team.repository.TeamMemberListRepository;
+import com.codingbottle.calendar.domain.team.repository.TeamMemberRepository;
 import com.codingbottle.calendar.domain.team.repository.TeamRepository;
 import com.codingbottle.calendar.domain.member.dto.MemberResponseDto;
 import com.codingbottle.calendar.domain.member.entity.Member;
@@ -36,7 +36,7 @@ public class TeamService {
     private final MemberService memberService;
     private final ScheduleService scheduleService;
     private final TeamRepository teamRepository;
-    private final TeamMemberListRepository teamMemberListRepository;
+    private final TeamMemberRepository teamMemberRepository;
     private final TeamCodeRepository teamCodeRepository;
     private final TeamMapper teamMapper;
     private final TeamScheduleMapper teamScheduleMapper;
@@ -50,7 +50,6 @@ public class TeamService {
 
         Team team = Team.builder()
                     .name(teamCreateReqDto.name())
-                    .teamMemberLists(new ArrayList<>())
                     .leader(member)
                     .build();
 
@@ -60,22 +59,24 @@ public class TeamService {
                 .team(team)
                 .build();
 
-        TeamMemberList teamMemberList = TeamMemberList.builder()
+        List<TeamMemberRspDto> teamRspDtos = findTeamRspDtosByMemberId(memberId);
+
+        TeamMember teamMember = TeamMember.builder()
                                         .team(team)
                                         .member(member)
+                                        .teamSequence(teamRspDtos.size()+1)
                                         .build();
 
         team.setTeamCode(teamCode);
-        team.addTeamMemberLists(teamMemberList);
+        team.addTeamMemberLists(teamMember);
 
         teamRepository.save(team);
     }
 
     // 팀 id로 팀 조회
-    public Team findTeamByTeamId(Long teamId) {
+    private Team findTeamByTeamId(Long teamId) {
         Optional<Team> teamOptional = teamRepository.findById(teamId);
-        Team team = teamOptional.orElseThrow(() ->new BusinessException(ErrorCode.TEAM_NOT_FOUND));
-        return team;
+        return teamOptional.orElseThrow(() ->new BusinessException(ErrorCode.TEAM_NOT_FOUND));
     }
 
     // 팀 id로 팀 조회(반환 타입 Dto)
@@ -85,18 +86,18 @@ public class TeamService {
     }
 
     // 해당 팀원이 소속된 모든 팀 조회
-    public List<TeamRspDto> findTeamRspDtosByMemberId(Long memberId) {
-        List<TeamMemberList> teamMemberLists = teamMemberListRepository.findTeamMemberListByMember_Id(memberId);
+    public List<TeamMemberRspDto> findTeamRspDtosByMemberId(Long memberId) {
+        List<TeamMember> teamMembers = teamMemberRepository.findTeamMemberListByMember_Id(memberId);
 
-        List<Team> teamList = new ArrayList<>();
+        List<TeamMemberRspDto> teamMemberRspDtos = new ArrayList<>();
 
-        if(teamMemberLists != null) {
-            for(TeamMemberList teamMemberList : teamMemberLists) {
-                teamList.add(teamMemberList.getTeam());
+        if(teamMembers != null) {
+            for(TeamMember teamMember : teamMembers) {
+                teamMemberRspDtos.add(teamMapper.teamMemberToTeamMemberRspDto(teamMember, memberMapper));
             }
         }
 
-        return teamMapper.teamsToTeamRspDtos(teamList, memberMapper);
+        return teamMemberRspDtos;
     }
 
     // 팀 update 메소드
@@ -134,9 +135,9 @@ public class TeamService {
     }
 
     public List<MemberResponseDto> findTeamMembers(Long teamId, String email) {
-        List<TeamMemberList> teamMemberList = teamMemberListRepository.findTeamMemberByTeamIdAndEmail(teamId, email);
-        List<Member> memberList = teamMemberList.stream().map(t -> t.getMember()).toList();
-        System.out.println(memberList.isEmpty());
+        List<TeamMember> teamMember = teamMemberRepository.findTeamMemberByTeamIdAndEmail(teamId, email);
+        List<Member> memberList = teamMember.stream().map(TeamMember::getMember).toList();
+
         return memberMapper.membersToMemberResponseDtos(memberList);
     }
 
@@ -148,10 +149,10 @@ public class TeamService {
             throw new BusinessException(ErrorCode.LEADER_CANNOT_LEAVE_TEAM);
 
         // 리더는 팀 나가기 대신 팀 삭제하기 기능이 실행 되도록
-        Optional<TeamMemberList> optionalTeamMemberList = teamMemberListRepository.findTeamMemberListByMember_IdAndTeam_Id(memberId, teamId);
-        TeamMemberList teamMemberList = optionalTeamMemberList.orElseThrow(() -> new BusinessException(ErrorCode.NOT_EXISTS_IN_TEAM));
+        Optional<TeamMember> optionalTeamMemberList = teamMemberRepository.findTeamMemberListByMember_IdAndTeam_Id(memberId, teamId);
+        TeamMember teamMember = optionalTeamMemberList.orElseThrow(() -> new BusinessException(ErrorCode.NOT_EXISTS_IN_TEAM));
 
-        teamMemberListRepository.delete(teamMemberList);
+        teamMemberRepository.delete(teamMember);
     }
 
     @Transactional
@@ -170,22 +171,25 @@ public class TeamService {
         Optional<Team> optionalTeam = teamRepository.findTeamByTeamCode(receiveTeamCode);
         Team team = optionalTeam.orElseThrow(() -> new BusinessException(ErrorCode.INVALID_INVITE_CODE));
 
-        if(checkTeamCode(team, memberId)) {
+        if(Boolean.TRUE.equals(checkTeamCode(team, memberId))) {
             Member member = memberService.getById(memberId);
 
-            TeamMemberList teamMemberList = TeamMemberList.builder()
+            List<TeamMemberRspDto> teamRspDtos = findTeamRspDtosByMemberId(memberId);
+
+            TeamMember teamMember = TeamMember.builder()
                                             .team(team)
                                             .member(member)
+                                            .teamSequence(teamRspDtos.size()+1)
                                             .build();
 
-            team.addTeamMemberLists(teamMemberList);
+            team.addTeamMemberLists(teamMember);
         }
     }
 
     private Boolean checkTeamCode(Team team, Long memberId) {
         if(team.getTeamCode().getExpirationTime().isBefore(LocalDateTime.now())) // 코드 만료시간 확인
             throw new BusinessException(ErrorCode.TEAM_CODE_EXPIRED);
-        else if(checkTeamMemberListInMember(team.getTeamMemberLists(), memberId)) // 이미 가입되어 있는지
+        else if(checkTeamMemberListInMember(team.getTeamMembers(), memberId)) // 이미 가입되어 있는지
             throw new BusinessException(ErrorCode.ALREADY_IN_TEAM);
         return true;
     }
@@ -202,9 +206,9 @@ public class TeamService {
 
         return true;
     }
-    private Boolean checkTeamMemberListInMember(List<TeamMemberList> memberLists, Long memberId) {
-        for(TeamMemberList teamMemberList : memberLists) {
-            if(teamMemberList.getMember().getId() == memberId)
+    private Boolean checkTeamMemberListInMember(List<TeamMember> memberLists, Long memberId) {
+        for(TeamMember teamMember : memberLists) {
+            if(teamMember.getMember().getId() == memberId)
                 return true;
         }
         return false;

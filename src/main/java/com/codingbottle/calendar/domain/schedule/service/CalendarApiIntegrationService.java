@@ -61,97 +61,75 @@ public class CalendarApiIntegrationService {
 
     public void scheduleIntegration(String code) throws IOException {
         Credential credential = getCredential(code);
-
+        // 구글 캘린더 서비스 초기화
         Calendar calendarService = getCalendar(credential);
+        // 구글 프로필 서비스 초기화
         PeopleService peopleService = getPeople(credential);
 
+        // 구글 프로필 이메일 가져오기
         Person profile = getProfileFromPeopleService(peopleService);
+        // 이메일을 통해 member 불러오기()
         Member member = memberService.getByEmail(profile.getEmailAddresses().get(0).getValue());
 
-        String pageToken = member.getCalendarApiIntegration().getLastPageToken();
+        LocalDate now = LocalDate.now();
+        LocalDate startDate = now.minusYears(2);
+        LocalDate endDate = now.plusYears(2);
 
-        String lastPageToken;
+        // 마지막으로 연동된 페이지 토큰 불러오기
+        String lastPageToken = member.getCalendarApiIntegration().getLastPageToken();
+        // 마지막으로 연동된 이벤트 아이디 불러오기
         String lastEventId = member.getCalendarApiIntegration().getLastEventId();
 
-        LocalDate standardNow = LocalDate.of(LocalDate.now().getYear(), 12, 1);
-        LocalDate maxDate = standardNow.plusYears(2);
-        LocalDate minDate = standardNow.minusYears(2);
+        // 연동 시작
+        do {
+            Events events = calendarService.events()
+                    // 대표 캘린더
+                    .list("primary")
+                    // 연동 시작하는 날짜로 부터 +-2년 불러오도록 설정
+                    .setTimeMin(DateTime.parseRfc3339(Rfc3339DateConverter.convertNowLocalDateToRfc3339(startDate)))
+                    .setTimeMax(DateTime.parseRfc3339(Rfc3339DateConverter.convertNowLocalDateToRfc3339(endDate)))
+                    // 반복 이벤트를 싱글 이벤트로 반환되도록 설정
+                    .set("singleEvents", true)
+                    // 마지막으로 연동했던 페이지 토큰 이후로 불러오도록 설정
+                    .setPageToken(lastPageToken)
+                    .execute();
 
-        if (lastEventId == null) {
-            // Date, DateTime null값 확인 해야함.
-            do {
-                Events events = calendarService.events()
-                        .list("primary")
-                        .setTimeMin(DateTime.parseRfc3339(Rfc3339DateConverter.convertNowLocalDateToRfc3339(minDate)))
-                        .setTimeMax(DateTime.parseRfc3339(Rfc3339DateConverter.convertNowLocalDateToRfc3339(maxDate)))
-                        .set("singleEvents", true)
-                        .setPageToken(pageToken)
-                        .execute();
+            List<Event> items = events.getItems();
 
-                List<Event> items = events.getItems();
+            boolean foundStartEvent = lastEventId == null;
 
-                for (Event event : items) {
-                    if (event.getCreated() == null) {
-                        continue;
-                    }
+            for (Event event : items) {
+                if (event.getCreated() == null) {
+                    continue;
+                }
+                if (foundStartEvent) {
                     lastEventId = integrationSchedule(event, member);
+                } else if (event.getId().equals(lastEventId)) {
+                    foundStartEvent = true;
                 }
-                lastPageToken = pageToken;
-                pageToken = events.getNextPageToken();
-            } while (pageToken != null);
-        }
-        else {
-            // Date, DateTime null값 확인 해야함.
-            do {
-                Events events = calendarService.events()
-                        .list("primary")
-                        .setTimeMin(DateTime.parseRfc3339("2023-12-01T00:00:00+09:00"))
-                        .setTimeMax(DateTime.parseRfc3339("2025-12-01T00:00:00+09:00"))
-                        .set("singleEvents", true)
-                        .setPageToken(pageToken)
-                        .execute();
+            }
+            lastPageToken = events.getNextPageToken();
+        } while (lastPageToken != null);
 
-                List<Event> items = events.getItems();
-
-                boolean findStartEvent = false;
-                for (Event event : items) {
-                    if (event.getCreated() == null) {
-                        continue;
-                    }
-                    if(findStartEvent) {
-                        lastEventId = integrationSchedule(event, member);
-                    }
-                    else if(event.getId().equals(lastEventId)){
-                        findStartEvent = true;
-                    }
-
-                }
-                lastPageToken = pageToken;
-                pageToken = events.getNextPageToken();
-            } while (pageToken != null);
-        }
-
-        CalendarApiIntegration calendarApiIntegration = member.getCalendarApiIntegration();
-
-        CalendarApiIntegration updateCalendarApiIntegration = calendarApiIntegration.toBuilder()
+        CalendarApiIntegration updatedIntegration = member.getCalendarApiIntegration().toBuilder()
                 .lastPageToken(lastPageToken)
                 .lastEventId(lastEventId)
                 .build();
-
-        Member updateMember = member.toBuilder()
-                .calendarApiIntegration(updateCalendarApiIntegration)
+        Member updatedMember = member.toBuilder()
+                .calendarApiIntegration(updatedIntegration)
                 .build();
 
-        memberService.saveMember(updateMember);
-        log.info("구글 캘린더 api 연동 완료");
+        memberService.saveMember(updatedMember);
+        log.info("Google 캘린더 API 연동 완료");
     }
 
+    // 이벤트를 우리 서비스에 맞는 스케쥴로 변경 후 저장
     private String integrationSchedule(Event event, Member member) {
         LocalDate startDate;
         LocalDate endDate;
         LocalTime startDateTime = null;
         LocalTime endDateTime = null;
-        Boolean isAllDay = event.getCreated().isDateOnly();
+        boolean isAllDay = event.getCreated().isDateOnly();
 
         // Date = null, DateTime == not null
         if (event.getStart().getDate() == null) {
@@ -163,14 +141,14 @@ public class CalendarApiIntegrationService {
             LocalDateTime checkStartDateTime = LocalDateTime.of(startDate, startDateTime);
             LocalDateTime checkEndDateTime = LocalDateTime.of(endDate, endDateTime);
 
-// 두 시간의 차이가 24시간을 초과할 때 종일 일정으로 일정 추가
+            // 두 시간의 차이가 24시간을 초과할 때 종일 일정으로 일정 추가
             if (checkStartDateTime.plusHours(24).isBefore(checkEndDateTime)) {
                 startDateTime = null;
                 endDateTime = null;
                 isAllDay = true;
             }
         }
-// Date == not null, DateTime == null
+        // Date == not null, DateTime == null
         else {
             startDate = googleCalendarConverter.convertDateTimeToLocalDate(event.getStart().getDate());
             endDate = googleCalendarConverter.convertDateTimeToLocalDate(event.getEnd().getDate());
@@ -191,8 +169,7 @@ public class CalendarApiIntegrationService {
                 null
         );
         scheduleService.create(scheduleCreateReqDto, member.getId());
-        String lastEventId = event.getId();
-        return lastEventId;
+        return event.getId();
     }
 
     public String getRequestUrl() {

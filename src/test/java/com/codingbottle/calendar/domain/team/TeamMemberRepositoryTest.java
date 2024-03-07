@@ -2,8 +2,8 @@ package com.codingbottle.calendar.domain.team;
 
 import com.codingbottle.calendar.domain.team.entity.Team;
 import com.codingbottle.calendar.domain.team.entity.TeamCode;
-import com.codingbottle.calendar.domain.team.entity.TeamMemberList;
-import com.codingbottle.calendar.domain.team.repository.TeamMemberListRepository;
+import com.codingbottle.calendar.domain.team.entity.TeamMember;
+import com.codingbottle.calendar.domain.team.repository.TeamMemberRepository;
 import com.codingbottle.calendar.domain.team.repository.TeamRepository;
 import com.codingbottle.calendar.domain.member.entity.Member;
 import com.codingbottle.calendar.domain.member.repository.MemberRepository;
@@ -21,10 +21,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // DataJpaTest의 기본 액세스가 h2로 되어있어서 이렇게 설정해야 mysql로 연결됨
-public class TeamMemberListRepositoryTest {
+public class TeamMemberRepositoryTest {
 
     @Autowired
-    private TeamMemberListRepository teamMemberListRepository;
+    private TeamMemberRepository teamMemberRepository;
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
@@ -53,7 +53,7 @@ public class TeamMemberListRepositoryTest {
                 .name("먹동")
                 .build();
 
-        TeamMemberList teamMemberList = TeamMemberList.builder()
+        TeamMember teamMember = TeamMember.builder()
                 .id(1L)
                 .team(team)
                 .member(member)
@@ -62,19 +62,19 @@ public class TeamMemberListRepositoryTest {
 
         memberRepository.save(member);
         teamRepository.save(team);
-        teamMemberListRepository.save(teamMemberList);
+        teamMemberRepository.save(teamMember);
 
 
-        Optional<TeamMemberList> teamMemberList1 = teamMemberListRepository.findTeamMemberListByMember_IdAndTeam_Id(1L, 1L);
+        Optional<TeamMember> teamMemberList1 = teamMemberRepository.findTeamMemberListByMember_IdAndTeam_Id(1L, 1L);
 
         assertTrue(teamMemberList1.isPresent());
 
-        TeamMemberList teamMemberList2 = teamMemberList1.get();
+        TeamMember teamMember2 = teamMemberList1.get();
 
-        System.out.println(teamMemberList2.getMember().getEmail());
-        System.out.println(teamMemberList.getMember().getEmail());
+        System.out.println(teamMember2.getMember().getEmail());
+        System.out.println(teamMember.getMember().getEmail());
 
-        assertTrue(teamMemberList.getMember().getEmail().equals(teamMemberList2.getMember().getEmail()));
-        assertTrue(teamMemberList.getTeam().getId().equals(teamMemberList2.getTeam().getId()));
+        assertTrue(teamMember.getMember().getEmail().equals(teamMember2.getMember().getEmail()));
+        assertTrue(teamMember.getTeam().getId().equals(teamMember2.getTeam().getId()));
     }
 }

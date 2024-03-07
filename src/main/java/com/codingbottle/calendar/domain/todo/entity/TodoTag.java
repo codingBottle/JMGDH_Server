@@ -28,6 +28,9 @@ public class TodoTag extends BaseTimeEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
+    @OneToMany(mappedBy = "todoTag", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Todo> todoList;
+
     @Builder
     public TodoTag(Long id, String tagName, TagColor color, Member member) {
         this.id = id;

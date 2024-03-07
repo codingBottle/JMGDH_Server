@@ -1,7 +1,13 @@
 package com.codingbottle.calendar.domain.member.entity;
 
 import com.codingbottle.calendar.domain.common.BaseTimeEntity;
+import com.codingbottle.calendar.domain.friend.entity.Friend;
+import com.codingbottle.calendar.domain.friend.entity.FriendRequest;
 import com.codingbottle.calendar.domain.schedule.entity.CalendarApiIntegration;
+import com.codingbottle.calendar.domain.schedule.entity.Schedule;
+import com.codingbottle.calendar.domain.team.entity.TeamMember;
+import com.codingbottle.calendar.domain.todo.entity.Todo;
+import com.codingbottle.calendar.domain.todo.entity.TodoTag;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,6 +39,32 @@ public class Member extends BaseTimeEntity {
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> role = new ArrayList<>();
+
+    // 연관관계 설정을 위해 작성된 컬럼
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<TeamMember> teamMembers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Todo> todoList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<TodoTag> todoTags = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Schedule> scheduleList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member1", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Friend> friends1 = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member2", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Friend> friends2 = new ArrayList<>();
+
+    @OneToMany(mappedBy = "reqMember", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<FriendRequest> friendRequests1 = new ArrayList<>();
+
+    @OneToMany(mappedBy = "rspMember", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<FriendRequest> friendRequests2 = new ArrayList<>();
+
 
     @Builder
     public Member(Long id, String nickname, String email, String imageUrl, CalendarApiIntegration calendarApiIntegration, List<String> role) {
